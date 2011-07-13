@@ -257,7 +257,7 @@ class CronPHP_Crontab_Cronjob {
     }
 
     public function parseJob($line) {
-        if (!preg_match('#^([0-9/* ]+) (\w+) ([\w/]+/cronphp -f) "(.+)"$#', $line, $matches)) {
+        if (!preg_match('#^([0-9/* ]+) (\w+) (' . __FILE__ . ' -f) "(.+)"$#', $line, $matches)) {
             throw new InvalidArgumentException('Line does not match valid format.');
         }
 
