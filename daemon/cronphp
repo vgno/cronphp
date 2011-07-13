@@ -72,7 +72,6 @@ if ((isset($options['d']) || isset($options['daemon'])) && (!isset($options['f']
             $newCrontab->addJob($cronjob);
         }
 
-        var_dump($installedCrontab, $newCrontab, $installedCrontab != $newCrontab);
         // Compare the crontabs to see if anything has changed.
         if ($installedCrontab != $newCrontab) {
             // Install the new crontab
