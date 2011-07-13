@@ -1,0 +1,284 @@
+/* .................................................
+
+Tilpasset stilark for VG Multimedias admin-sider
+
+Laget av Hilde Skjolberg for VG Nett 2009 - hils@vg.no
+Forkludret til av Tommy Jocumsen - tjoc@vg.no
+
+
+IKKE skriv tool-spesifikk CSS i dette stilarket!
+Lag et tool-unikt stilark som bygger videre paa dette!
+
+................................................... */
+
+
+
+/* FELLES */
+body {margin:0; padding:0; font-family:"Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif; color: #445; background: #aaa;}
+#wrapper {width:1300px; margin:0; color: #445; background:#ddd url(main_background.png) 0 0 repeat-y; border-right: 1px solid #888;}
+
+img {border:none;}
+
+a:link {color:#455;}
+a:visited {color:#888;}
+a:hover, a:focus {color:#333;}
+a:active {outline: none;}
+
+.hidden {display:none;}
+.clearfix {clear:both;}
+.floatfix:after {content: "."; display: block; height: 0; clear: both; visibility: hidden;} /*auto-cleares floats*/
+
+
+/* HEADER */
+#header {position:relative; height:80px; margin:0; background:#bebebe url(header_gradient.png) 0 0 repeat-x; border-bottom:1px solid #eee;}
+#header img {float:left; margin:6px; border:none;}
+#header h2 {margin: 0 100px; padding: 26px 0 26px 185px; text-align: center; font-size: 1.2em; text-transform: uppercase; text-shadow: #fff 0 1px 1px;}
+#header p.user {position:absolute; margin:0; padding:10px; right:20px; top:20px; font-size: .7em; text-shadow: #fff 0 1px 1px; background-color: rgba(136,136,136,0.3); border:2px groove #ccc;}
+#header p.user span {color: #900; font-weight: bold;}
+
+
+/* Vertical left  main menu */
+#menubar {clear:both; float:left; width:193px; margin:0; padding:0 0 100px; background:#eee; border-top:1px solid #ccc;}
+#menubar img.logo {margin:10px;}
+#menubar h3 {margin:25px 0 0; padding-left:20px; font-size:.7em; font-weight:bold; text-transform:uppercase; cursor:pointer;}
+#menubar h3.open {background:transparent url(arrow_down.png) 7px 40% no-repeat;}
+#menubar h3.closed {background:transparent url(arrow_right.png) 10px 50% no-repeat;}
+#menubar ul {list-style: none; margin: 0 0 30px; padding: 0; font-size:.7em;}
+#menubar ul li {margin: 0; padding: 0;}
+#menubar ul li.external a:link, #menubar ul li.external a:visited {background-image: url(icon_externallink.png); background-position:170px 50%; background-repeat:no-repeat;}
+#menubar ul li a:link, #menubar ul li a:visited {display: block; padding:3px 10px 3px 20px; color:#455; text-decoration:none; border-top:1px dotted #f8f8f8; border-bottom:1px dotted #d6d6d6;}
+#menubar ul li a:hover {color:#222; background:#ddd url(menu_hovergrad.png) 0 0 repeat-x; text-decoration:none; border-top:1px solid #fff;}
+#menubar ul li.external a:hover {color:#222; background:#ddd url(menu_activegrad.png) top right no-repeat; text-decoration:none;}
+#menubar ul li.active a {color:#900; font-weight: bold; background:#ddd url(arrow_right.png) 180px 50% no-repeat; border-top:1px solid #fff; border-bottom:1px solid #bbb;}
+#menubar h3.closed + ul {display:none;}
+
+/* CONTENT */
+#content {float:left; margin:0 1px; width: 1105px; border-top:1px solid #ccc;}
+#content #tool {margin:0; padding-bottom:10px;}
+#content #tool h1 {margin:0; padding: 21px; font-size: .9em; text-align: center; text-transform: uppercase; color:#ddd; letter-spacing: 1px; word-spacing: .4em; text-shadow: #000 1px 2px 2px; background:#909090 url(h1_darkgrad2.png) 0 0 repeat-x;}
+
+
+/* Horizontal submenu */
+
+#tool ul.submenu {list-style: none; margin: 0; padding:5px 35px; font-size: .7em; font-weight: bold; line-height:2.5em; background: url(glassgrad_lightgrey.png) 0 50% repeat-x; border-top: 1px solid #fff; border-bottom: 1px solid #ccc;}
+#tool ul.submenu li {margin: 0; float:left;}
+#tool ul.submenu li a {text-decoration:none; float:left; padding-right:10px; margin-right:5px; color: #455; background:url(subnav_li2.png) no-repeat right 30px;}
+#tool ul.submenu li a span {float:left; padding:1px 0 1px 10px; background:url(subnav_li1.png) no-repeat 0 30px;}
+#tool ul.submenu li a:hover,#tool ul.submenu li a:focus {background-position:right 0; color: #900; text-shadow: #ddd 0 1px 0;}
+#tool ul.submenu li a:hover span,#tool ul.submenu li a:focus span {background-position:0 0;}
+#tool ul.submenu li a:active {background-position: right -30px; text-shadow:#eee 0 1px 0;}
+#tool ul.submenu li a:active span {background-position: 0 -30px; padding:2px 0 0 10px;}
+
+#tool ul.submenu li.active {background-color: transparent;}
+#tool ul.submenu li.active a {background-position:right -60px; color:#fff; text-shadow: #666 0 1px 2px;}
+#tool ul.submenu li.active a span {background-position:0 -60px;}
+
+#tool ul.submenu:after {content:"."; display:block; height:0; clear:both; visibility:hidden;}/*auto-cleares floats*/
+
+
+#tool ul.subsubmenu {list-style: none; margin: -20px -50px 30px; padding:2px 35px; font-size: .8em; font-weight: bold; line-height:2.5em; color: #222; background: #b4b4b4 url(sprite_tablebacks.png) -1px -200px repeat-x; border-top: 1px solid #fff; border-bottom: 1px solid #ccc;}
+#tool ul.subsubmenu li {display: inline; margin: 0 10px;}
+#tool ul.subsubmenu li a:link, #tool ul.subsubmenu li a:visited {color: #444; text-decoration: none; text-transform: uppercase; text-shadow: #fff 0 1px 0;}
+#tool ul.subsubmenu li a:hover, #tool ul.subsubmenu li a:active {color: #600;}
+#tool ul.subsubmenu li.active {background: none;}
+#tool ul.subsubmenu li.active a:link, #tool ul.subsubmenu li.active a:visited {color: #900;}
+
+/* Similar for toolbar */
+#tool .toolbar {margin: -20px -50px 30px; padding:2px 35px; font-size: .8em; font-weight: bold; line-height:2.5em; color: #222; background: #b4b4b4 url(sprite_tablebacks.png) -1px -200px repeat-x; border-top: 1px solid #fff; border-bottom: 1px solid #ccc;}
+
+
+/* SANDBOX - SINGLE TOOLS */
+
+#sandbox {margin: 20px 50px; font-size: .8em; min-height: 600px;}
+
+/* styling of tools */
+#sandbox .code, #sandbox code {color: #222; font: 1em Consolas, "Courier New", monospace; text-transform: lowercase;}
+#sandbox .draft {background-color:#d4b6b2;}
+#sandbox .active {background-color:#ccd4b2;}
+
+
+#sandbox h2 {font-size: 1.5em; color: #900; text-transform: uppercase; text-shadow: #fff 0 1px 0;}
+#sandbox h3 {font-size: 1em; text-transform: uppercase; text-shadow: #fff 0 1px 0;}
+#sandbox p {width: 700px; margin: .5em 0 1em; line-height: 1.6em;}
+
+#sandbox hr {clear: both; margin: 30px -50px; border: none; border-top: 1px solid #aaa; border-bottom: 1px solid #eee;}
+
+/* Feedback messages to user */
+#sandbox p.message {width: 550px; margin:20px 10px; padding:10px 50px; background:#eee; border: 1px solid #999; -moz-box-shadow: 3px 3px 2px #bbb; -webkit-box-shadow: 3px 3px 2px #bbb; box-shadow: 3px 3px 2px #bbb;}
+#sandbox p.message.short {font-weight:bold; font-size: 1.5em;}
+#sandbox p.message.info {color:#444; background:#fff8cc url(icon_info.png) 9px 50% no-repeat; border-color:#ffbb00;}
+#sandbox p.message.ok {color:#4a2; background:#d9edd4 url(icon_ok.png) 9px 50% no-repeat; border-color:#41a62a;}
+#sandbox p.message.error {color:#e2001a; background:#f9ccd1 url(icon_warning.png) 9px 50% no-repeat; border-color:#e2001a;}
+
+/* Forms */
+#sandbox form.dataSet fieldset {width: 450px; margin:10px; font-size: .9em; background: #e8e8e8 url(form_gradient2.png) 0 top repeat-x; border-color: #eee;}
+
+#sandbox form.dataSet legend {margin: 0 5px; padding: 0 5px; font-size: 1.1em; font-weight: bold;}
+
+#sandbox form.dataSet p {width: auto; margin-right: 75px;}
+
+#sandbox form.dataSet ol {list-style: none; margin: 0 auto; padding: 0;}
+#sandbox form.dataSet ol li {margin: 5px 0; padding: 5px 10px; color: #544;}
+#sandbox form.dataSet ol li label, #sandbox form.dataSet .label {display: inline-block; width: 60px; margin: 0 15px 0 0; padding: 2px 0; text-align: right; vertical-align: top;}
+#sandbox form.dataSet ol li input, #sandbox form.dataSet ol li textarea {width: 330px; margin-right: 5px; padding: 2px; border: 1px solid #aaa;}
+#sandbox form.dataSet ol li input.checkbox, #sandbox form.dataSet ol li input.radio, input[type=checkbox], input[type=radio] { width: auto !important;}
+#sandbox form.dataSet ol li input#firstname {width: 90px;}
+#sandbox form.dataSet ol li input#lastname {width: 150px;}
+#sandbox form.dataSet ol li input#zipcode {width: 60px;}
+#sandbox form.dataSet ol li input#location {width: 180px;}
+
+#sandbox form.dataSet ol li.buttons:after {content: "."; display: block; height: 0; clear: both; visibility: hidden;} /*auto-cleares floats*/
+
+#sandbox form.dataSet input.submit {float:right; width: auto; height: auto; margin: 0 20px 10px 0; padding: 2px 20px; background: #ccd4b2 url(sprite_tablebacks.png) 0 -400px no-repeat; text-shadow: #fff 0 1px 0; border: 1px solid #9a7; cursor: pointer;}
+#sandbox form.dataSet input.submit.edit {background: #fac984 url(sprite_tablebacks.png) 0 -600px no-repeat; text-shadow: #fff 0 1px 0; border-color: #f94;}
+#sandbox form.dataSet input.submit.warning {color: #000; background: #d4b6b2 url(sprite_tablebacks.png) 0 -500px no-repeat; text-shadow: #ddd 0 1px 0; border-color: #d24f4f;}
+
+/* links disguised as form buttons */
+#sandbox form.dataSet a.btnLink {float:right; width: auto; height: auto; margin: 0 20px 10px 0; padding: 3px 20px; font-size: .85em; text-decoration: none; color: #000; background: #ccd4b2 url(sprite_tablebacks.png) 0 -400px no-repeat; text-shadow: #fff 0 1px 0; border: 1px solid #9a7; cursor: pointer;}
+
+#sandbox form.dataSet a.btnLink.edit {background: #fac984 url(sprite_tablebacks.png) 0 -600px no-repeat; text-shadow: #fff 0 1px 0; border-color: #f94;}
+#sandbox form.dataSet a.btnLink.warning {color: #000; background: #d4b6b2 url(sprite_tablebacks.png) 0 -500px no-repeat; text-shadow: #ddd 0 1px 0; border-color: #d24f4f;}
+
+
+/* Tables */
+
+table.dataList {margin: 20px 0; text-align: center; border-collapse: collapse; -moz-box-shadow: 1px 1px 0 #eee; -webkit-box-shadow: 1px 1px 0 #eee;}
+
+table.dataList a:visited {color: #888;}
+
+table.dataList caption {margin: 0; padding: 7px; font-size: .8em; font-weight: normal; text-align: left; color: #eee; letter-spacing: 2px; text-transform: uppercase; text-shadow: #444 0 1px 2px; background: #444 url(sprite_tablebacks.png) 0 -100px no-repeat; border-color: #444;}
+
+table.dataList th, table.dataList td {margin: 0; padding: 5px; background: #eee; border: 1px solid #ccc;}
+table.dataList thead th {margin: 0; padding: 7px; font-size: .8em; font-weight: normal; color: #eee; letter-spacing: 2px; text-transform: uppercase; text-shadow: #444 0 1px 2px; background: #444 url(sprite_tablebacks.png) 0 -100px no-repeat; border-color: #444;}
+
+table.dataList tbody th  {background: #bbb url(sprite_tablebacks.png) 0 -200px no-repeat; border: 1px solid #aaa; border-left: 1px solid #888;}
+table.dataList tbody td, table.dataList tbody td + th  {background: #e4e3e3 url(sprite_tablebacks.png) 0 -700px no-repeat;}
+table.dataList tbody td + th {text-align: left; font-weight: normal; color: #700; border: 1px solid #ccc;}
+table.dataList tbody tr.draft td, table.dataList tbody td.draft  {background: #d4b6b2 url(sprite_tablebacks.png) 0 -300px no-repeat; border-color: #cbb;}
+table.dataList tbody tr.active td, table.dataList tbody td.active  {background: #ccd4b2 url(sprite_tablebacks.png) 0 -400px no-repeat; border-color: #bc8;}
+
+table.dataList .left {text-align: left;}
+
+
+/* pagination */
+
+.pagination {text-align: center;}
+.pagination li { display: inline-block; margin: 2px 3px; }
+.pagination a:link, .pagination a:visited {padding: 2px 6px; background: #f5f5f5; border: 1px solid #aaa; text-decoration: none;}
+#sandbox .pagination .active {padding: 2px 4px; color: #fff; background: #aaa; border: 1px solid #888;}
+.pagination .previous a, .pagination .next a {color: #677; background: transparent; border: none;}
+.pagination a:hover { color: #fff; background: #bbb; }
+.pagination .previous a:hover, .pagination .next a:hover {color: #222; background: none;}
+
+/* Lists with on/off-buttons */
+
+
+dl.onoff {clear: both; width: 490px; margin: 0 10px 20px; padding: 10px 20px; color: #ddd; font-size: .85em; background: #666; border: 2px groove #777; -moz-border-radius: 7px;
+-webkit-border-radius: 7px; border-radius: 7px;}
+
+dl.onoff dt {width: 300px; float: left; margin: 0; padding: 12px 30px 12px 5px; font-weight: bold; text-align: right; text-transform: uppercase; letter-spacing: 1px; text-shadow: #000 0 1px 2px; border-bottom: 1px dotted #888;}
+dl.onoff dd {float: left; width: 150px; margin: 0; padding: 2px 0; border-bottom: 1px dotted #888;}
+dl.onoff:after {content: "."; display: block; height: 0; clear: both; visibility: hidden;} /*auto-cleares floats*/
+
+dl.onoff dd a {margin: 0 10px;}
+
+/* no state, working state */
+dl.onoff dd a.onbtn:link, dl.onoff dd a.onbtn:visited, dl.onoff dd.working a.onbtn:link, dl.onoff dd.working a.onbtn:visited {display: block; float: left; height: 34px; width: 43px; background: #898 url(sprite_onoff.png) 0 0 no-repeat; text-indent: -5000px; overflow: hidden;}
+dl.onoff dd a.offbtn:link, dl.onoff dd a.offbtn:visited, dl.onoff dd.working a.offbtn:link, dl.onoff dd.working a.offbtn:visited {display: block; float: left; height: 34px; width: 43px; background: #898 url(sprite_onoff.png) -100px 0 no-repeat; text-indent: -5000px; overflow: hidden;}
+
+/* on-state: Function is active */
+dl.onoff dd.on a.onbtn:link, dl.onoff dd.on a.onbtn:visited {display: block; float: left; height: 34px; width: 43px; background: #898 url(sprite_onoff.png) 0 -100px no-repeat; text-indent: -5000px; overflow: hidden;}
+dl.onoff dd.on a.offbtn:link, dl.onoff dd.on a.offbtn:visited {display: block; float: left; height: 34px; width: 43px; background: #898 url(sprite_onoff.png) -100px 0 no-repeat; text-indent: -5000px; overflow: hidden;}
+
+/* off-state: Function is inactive */
+dl.onoff dd.off a.onbtn:link, dl.onoff dd.off a.onbtn:visited {display: block; float: left; height: 34px; width: 43px; background: #898 url(sprite_onoff.png) 0 0 no-repeat; text-indent: -5000px; overflow: hidden;}
+dl.onoff dd.off a.offbtn:link, dl.onoff dd.off a.offbtn:visited {display: block; float: left; height: 34px; width: 43px; background: #898 url(sprite_onoff.png) -100px -100px no-repeat; text-indent: -5000px; overflow: hidden;}
+
+dl.onoff dd a.onbtn:hover, dl.onoff dd.off a.onbtn:hover, dl.onoff dd.working a.onbtn:hover {background-position: 0 -50px;}
+dl.onoff dd a.offbtn:hover, dl.onoff dd.on a.offbtn:hover, dl.onoff dd.working a.offbtn:hover {background-position: -100px -50px;}
+
+dl.onoff.single dt, dl.onoff.single dd {border: none;}
+
+dl.onoff dd span.default {display: none;}
+dl.onoff dd span.loading {display: block; float: left; width: 20px; height: 34px; background: transparent url(btnicon_loading.gif) 50% 50% no-repeat; text-indent: -5000px;}
+dl.onoff dd span.ok {display: block; float: left; width: 440px; height: 10px;margin-right: -500px; padding: 12px 0 12px 60px; color: #222; font-weight: bold; background: transparent url(btnicon_ok.gif) 0 50% no-repeat;}
+
+dl.onoff dd span.error {display: block; float: left; width: 440px; height: 10px; margin-right: -500px; padding: 12px 0 12px 60px; color: #900; font-weight: bold; background: transparent url(btnicon_error.gif) 0 50% no-repeat;}
+
+dl.onoff dd span.long {height: auto; padding: 3px 0 3px 60px;}
+
+
+#sandbox .buttonbox { padding: 20px;}
+#sandbox .buttonbox .btn {padding: 6px 10px; font-size: .9em; text-transform: uppercase; text-decoration: none; color: #fff; text-shadow: #000 0 -1px 3px; background: #777 url(sprite_btnback.png) 0 0 repeat-x; border: 1px solid #666; border-top: 1px solid #444; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; -moz-box-shadow: 0 1px 1px #bbb; -webkit-box-shadow: 0 1px 1px #bbb; cursor:pointer;}
+
+#sandbox .buttonbox .off .ok {background: #7a8 url(sprite_btnback.png) 0 -120px repeat-x;}
+#sandbox .buttonbox .ok {background: #2a2 url(sprite_btnback.png) 0 -160px repeat-x;}
+#sandbox .buttonbox a.ok:hover {background: #2c3 url(sprite_btnback.png) 0 -200px repeat-x;}
+
+#sandbox .buttonbox .off .warning {background: #a88 url(sprite_btnback.png) 0 -240px repeat-x;}
+#sandbox .buttonbox .warning {background: #d43 url(sprite_btnback.png) 0 -280px repeat-x;}
+#sandbox .buttonbox a.warning:hover {background: #f43 url(sprite_btnback.png) 0 -320px repeat-x;}
+
+#sandbox .buttonbox .off .change {background: #985 url(sprite_btnback.png) 0 -360px repeat-x;}
+#sandbox .buttonbox .change {background: #f90 url(sprite_btnback.png) 0 -400px repeat-x;}
+#sandbox .buttonbox a.change:hover {background: #fa0 url(sprite_btnback.png) 0 -440px repeat-x;}
+
+
+/* Data list tables
+ol.dataList {list-style:none; margin:0; padding:0; font-size:.9em;}
+ol.dataList li {margin:5px 0; padding:3px; color:#ddd;}
+ol.dataList li label {display:block; float:left; margin:0 15px 0 0; width:160px; text-align:right;}
+ol.dataList li input,form ol li textarea {width:350px; padding:3px; background:#ccc; border:1px solid #444;}
+ul.dataList {list-style:none; margin:0; padding:0; font-size:.9em;}
+ul.dataList li {margin:5px 0; padding:3px; color:#ddd; border:0 solid black;}
+ul.dataList li label {display:block; float:left; margin:0 15px 0 0; width:160px; text-align:right;}
+table.dataList thead th {background:#CCC; font-weight:bold; color:#444; border-bottom:1px solid #000;}
+table.dataList tr.draft td {background:#886666;}
+table.dataList tr.active td {background:#668866;}
+table.dataList td.draft {background:#886666;}
+table.dataList td.active {background:#668866;}
+table.dataList tr td {background:#888;}
+table.dataList td {padding:1px 2px; margin:1px; border:1px dotted #AAA;}
+table.dataList td a {color:#FF0;}
+dl.dataList dt {clear:left; float:left; display:block; margin:0 5px; border-bottom:1px dotted #666;}
+dl.dataList dd {clear:right; float:left; display:block; margin:0 5px; border-bottom:1px dotted #666;}
+SPAN.tagMatches {margin-left:10px;}
+SPAN.tagMatches SPAN {padding:2px; margin-right:4px; background-color:#0000AB; color:#fff; cursor:pointer;}
+ */
+ 
+ 
+ 
+/* Preview-box */
+
+#sandbox .preview {width: 600px; float: right; margin: 6px -350px 20px 50px; padding: 10px; background: #fff; border: 1px solid #aaa; -moz-box-shadow: 3px 3px 2px #666; -webkit-box-shadow: 3px 3px 2px #666;} 
+ 
+ 
+/* wiki-box */
+#sandbox .wikibox {width: 250px; float: right; margin: -2em 0 20px; padding: 5px; background: #eee; border: 2px groove #fff;}
+#sandbox .wikibox h3 {text-align: center; margin: 3px 0; color: #900;}
+#sandbox .wikibox h4 {margin: 10px 0 -5px;}
+#sandbox .wikibox p {width: auto; font-size: .9em; line-height: 1.4em;}
+#sandbox .wikibox .code {color: #222; font: 1em Consolas, "Courier New", monospace;}
+
+#sandbox .wikibox + .wikibox {clear: right; margin-top: 15px;}
+
+/* FOOTER */
+#footer {clear: both; color:#fff; text-shadow: #222 0 1px 1px; background:#909090 url(h1_darkgrad.png) 0 -10px repeat-x;}
+#footer p {margin:0; padding:20px; font-size:.8em; text-align:center;}
+
+#sandbox .preview:after, #sandbox .wikibox:after {content: "."; display: block; height: 0; clear: both; visibility: hidden;} /*auto-cleares floats*/
+
+
+/* ----------------------------------
+       SPESIFIKKE SIDER
+---------------------------------- */
+
+/* VELKOMSTSIDEN */
+#content.start #tool .frontbox {width:500px; margin:10px auto; color:#222; background:#ccc; border-bottom:2px solid #000;}
+#content.start #tool .frontbox h2 {color:#eee; background:#ad1524;}
+#content.start #tool .frontbox a:link,#content.start #tool .frontbox a:visited {color:#222;}
+#content.start #tool .frontbox a:hover {color:#900;}
+#content.start #tool .frontbox.statistikk {font-size:.9em;}
+#content.start #tool .frontbox.statistikk dl {display:block; width:500px; margin:10px 0;}
+#content.start #tool .frontbox.statistikk dt {clear:left; float:left; display:block; margin:0; padding:4px; font-weight:bold; border-top:1px dotted #555;}
+#content.start #tool .frontbox.statistikk dd {clear:right; display:block; margin:0; padding:4px; border-top:1px dotted #555;}

@@ -1,0 +1,31 @@
+<table class="dataList" style="width: 100%">
+<col class="string" />
+<col class="string" />
+<col class="string" />
+<col class="string" />
+<col class="number" />
+<col class="string" />
+
+  <thead>
+    <tr>
+        <th scope="col">Cronjob</th>
+        <th scope="col">Server</th>
+        <th scope="col">Start time</th>
+        <th scope="col">End time</th>
+        <th scope="col">Execution time</th>
+        <th scope="col">Exit code</th>
+    </tr>
+  </thead>
+  <tbody>
+<?php foreach ($this->list as $log) { ?>
+    <tr>
+        <td><?php echo $log['cronjob']; ?></td>
+        <td><?php echo $log['logServer']; ?></td>
+        <td><?php echo $log['logStart']; ?></td>
+        <td><?php echo $log['logEnd']; ?></td>
+        <td><?php echo $log['logRunTime']; ?></td>
+        <td><?php echo $log['logResponse']; ?></td>
+    </tr>
+<?php } ?>
+  </tbody>
+</table>

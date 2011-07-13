@@ -1,0 +1,43 @@
+<?php
+$defaults = array(
+    'phpSettings' => array(
+        'display_startup_errors' => 0,
+        'display_errors' => 0,
+    ),
+    'includePaths' => array(
+        'library' => APPLICATION_PATH . '/../library',
+    ),
+    'bootstrap' => array(
+        'path' => APPLICATION_PATH . '/Bootstrap.php',
+        'class' => 'Bootstrap'
+    ),
+    'appnamespace' => 'Application',
+    'resources' => array(
+        'frontController' => array(
+            'controllerDirectory' => APPLICATION_PATH . '/controllers',
+            'moduleDirectory' => APPLICATION_PATH . '/modules',
+            'params' => array(
+                'displayExceptions' => 0,
+            ),
+        ),
+        'layout' => array(
+            'layoutPath' => APPLICATION_PATH . '/layouts/scripts/',
+        ),
+        'db' => array(
+            'adapter' => 'Pdo_Mysql',
+            'params' => array(
+                'host' => '',
+                'dbname' => 'cronphp',
+                'username' => 'cronphp',
+                'password' => '',
+            ),
+        ),
+    ),
+);
+
+$environment = __DIR__ . '/config.' . APPLICATION_ENV . '.php';
+if (is_file($environment) && is_readable($environment)) {
+        return array_merge_recursive($defaults, require $environment);
+}
+
+return $defaults;

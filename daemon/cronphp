@@ -1,0 +1,221 @@
+#!/usr/bin/php
+<?php
+// Arguments
+$arguments = array(
+    'd' => 'daemon',
+    'f:' => 'file:',
+    'c:' => 'config:'
+);
+
+$defaults = array(
+    'c' => '/etc/cronphp',
+    'config' => '/etc/cronphp',
+);
+$defaults = array(
+    'config' => 'cronphp.config',
+);
+
+$options = array_merge($defaults, getopt(implode('', array_keys($arguments)), $arguments));
+
+// Load configuration
+if (is_file($options['config']) && is_readable($options['config'])) {
+    $config = parse_ini_file($options['config']);
+
+    // TODO: Make sure we have a valid configuration
+} else {
+    echo 'No configuration was found.' . PHP_EOL;
+    exit(22);
+}
+
+// Only run in daemon mode if no file is passed
+if ((isset($options['d']) || isset($options['daemon'])) && (!isset($options['f']) && !isset($options['file']))) {
+
+    // Daemon
+
+    // File locking
+    /*$fp = fopen('/var/run/cronphp.pid', 'c');
+    if (!flock($fp, LOCK_EX)) {
+        echo 'You can only run one instance at the time' . PHP_EOL;
+    }*/
+
+    // Find currently installed crontab
+    $crontab = new CronPHP_Crontab($config['crontab']);
+    $crontab->clear(); // TODO: Avoid this.
+
+    do {
+        // Check joblist
+        // TODO: Add try/catch to handle when server is down
+        $jobs = json_decode(file_get_contents($config['endpoint'] . 'list/?server=' . $_ENV['HOSTNAME']));
+
+        // Create the new crontab
+        foreach ($jobs as $job) {
+            $cronjob = new CronPHP_Crontab_Cronjob($job);
+            $crontab->addJob($cronjob);
+        }
+
+        // Install the new crontab
+        // TODO: Make sure it only writes when changed
+        $crontab->write();
+
+        // Sleep for a while
+        sleep(60);
+
+        // TODO: Figure out if we need to listen to signal for stoping the job
+        $keepRunning = true;
+    } while ($keepRunning);
+} else if ((isset($options['d']) || isset($options['daemon'])) && (isset($options['f']) || isset($options['file']))) {
+    echo 'You can\'t specify both daemon mode and file argument' . PHP_EOL;
+    exit(1);
+} else {
+
+    // Cronjob run
+    if (isset($options['f']) || isset($options['file'])) {
+        $file = isset($options['f']) ? $options['f'] : $options['file'];
+    } else {
+        echo 'No specified job was found.' . PHP_EOL;
+        exit(22);
+    }
+
+    // File locking
+    /*$fp = fopen('/var/run/cronphp.' . crc32($file) . '.pid', 'c');
+    if (!flock($fp, LOCK_EX)) {
+        echo 'You can only run one instance at the time' . PHP_EOL;
+    }*/
+
+    // Start timer
+    $start = time();
+    $startMs = microtime(true);
+
+    // Run cronjob
+    exec($file, $output, $return);
+
+    // Stop timer
+    $end = time();
+    $endMs = microtime(true);
+
+    // Prepare a request to logging service
+    $data = json_encode(
+        array(
+            'path'    => $file,
+            'server' => $_ENV['HOSTNAME'],
+            'start'  => '@' . $start,
+            'end'    => '@' . $end,
+            'runTime' => $endMs - $startMs,
+            'response' => $return,
+            'output' => implode($output, PHP_EOL),
+        )
+    );
+
+    $client = new CronPHP_Rest_Client();
+    $client->post($config['endpoint'] . 'log/', $data);
+}
+
+// Relase file lock
+//fclose($fp);
+
+class CronPHP_Rest_Client {
+    private $client;
+
+    public function __construct() {
+        $this->client = curl_init();
+    }
+
+    public function post($url, $data) {
+        curl_setopt($this->client, CURLOPT_URL, $url);
+        curl_setopt($this->client, CURLOPT_HEADER, 0);
+        curl_setopt($this->client, CURLOPT_POST, true);
+        curl_setopt($this->client, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->client, CURLOPT_POSTFIELDS, 'data=' . $data);
+
+        curl_exec($this->client);
+        curl_close($this->client);
+    }
+}
+
+class CronPHP_Crontab {
+    private $cronfile;
+    private $crontab = array();
+
+    public function __construct($cronfile) {
+        $this->cronfile = $cronfile;
+
+        if (!is_file($this->cronfile)) {
+            $this->write();
+        } else if (is_readable($this->cronfile)) {
+            $crontab = file($this->cronfile);
+            //$crontab = array('0 * * * * user path');
+            foreach ($crontab as $line) {
+                $job = new CronPHP_Crontab_Cronjob($line);
+                $this->addJob($job);
+            }
+        } else {
+            echo 'Unable to read crontab.' . PHP_EOL;
+            exit(1);
+        }
+    }
+
+    public function addJob(CronPHP_Crontab_Cronjob $job) {
+        $this->crontab[$job->path] = $job;
+
+        return $this;
+    }
+
+    public function removeJob($path) {
+        unset($this->crontab[$path]);
+
+        return $this;
+    }
+
+    public function write() {
+        if (!is_writable(dirname($this->cronfile))) {
+            echo 'Unable to install crontab. Missing write access to "' . $this->cronfile . '"' . PHP_EOL;
+            exit(1);
+        }
+
+        // TODO: Make sure we don't write any bogus cronjobs(wrong time, missing file, invalid user, etc)
+        return file_put_contents($this->cronfile, $this->crontab);
+    }
+
+    public function clear() {
+        $this->crontab = array();
+
+        return $this;
+    }
+}
+
+class CronPHP_Crontab_Cronjob {
+    public $path;
+    public $user;
+    public $minute = '0';
+    public $hour = '*';
+    public $dayOfMonth = '*';
+    public $month = '*';
+    public $dayOfWeek = '*';
+
+    public function __construct($job) {
+
+        if (is_string($job)) {
+            $job = $this->parseJob($job);
+        }
+
+        $job = (array) $job;
+
+        $this->path = $job['path'];
+        $this->user = $job['user'];
+        $this->minute = $job['minute'];
+        $this->hour = $job['hour'];
+        $this->dayOfMonth = $job['dayOfMonth'];
+        $this->month = $job['month'];
+        $this->dayOfWeek = $job['dayOfWeek'];
+    }
+
+    public function parseJob($line) {
+        list($minute, $hour, $dayOfMonth, $month, $dayOfWeek, $user, $path) = sscanf($line, '%s %s %s %s %s %s %s');
+
+        return array('path' => $path, 'user' => $user, 'minute' => $minute,  'hour' => $hour, 'dayOfMonth' => $dayOfMonth, 'month' => $month, 'dayOfWeek' => $dayOfWeek);
+    }
+
+    public function __toString() {
+        return sprintf('%s %s %s %s %s %s %s -f "%s"', $this->minute, $this->hour, $this->dayOfMonth, $this->month, $this->dayOfWeek, $this->user, __FILE__ , $this->path) .  PHP_EOL;
+    }
+}

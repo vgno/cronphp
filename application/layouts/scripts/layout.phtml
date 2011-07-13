@@ -1,0 +1,34 @@
+<?php echo $this->doctype(); ?>
+<html>
+<head>
+    <?php echo $this->headTitle('CronPHP'); ?>
+
+    <?php
+    $this->headMeta()->setHttpEquiv('Content-Type', 'text/html; charset=utf-8');
+    $this->headMeta()->appendName('viewport', 'initial-scale=1.0, user-scalable=no');
+    echo $this->headMeta();
+    ?>
+
+    <?php
+    $this->headLink()->appendStylesheet($this->baseUrl('css/vgmm_admin.css'));
+    echo $this->headLink();
+    ?>
+
+    <?php
+    $this->headScript()->prependFile('http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js');
+    echo $this->headScript();
+    ?>
+</head>
+
+<body>
+    <header>
+        <?php echo $this->partial('header.phtml'); ?>
+    </header>
+
+    <div id="sandbox">
+        <?php echo $this->layout()->content; ?>
+    </div>
+
+    <?php /*$this->partial('footer.phtml');*/ ?>
+</body>
+</html>
