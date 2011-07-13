@@ -10,16 +10,21 @@ class Application_Model_CronjobMapper extends Cronphp_Mapper {
 
     public function save(Application_Model_Cronjob $cronjob) {
         $data = array(
-            'email'   => $cronjob->getEmail(),
-            'comment' => $cronjob->getComment(),
-            'created' => date('Y-m-d H:i:s'),
+            'cronjobServer'     => $cronjob->getServer(),
+            'cronjobPath'       => $cronjob->getPath(),
+            'cronjobUser'       => $conrjob->getUser(),
+            'cronjobMinute'     => $cronjob->getMinute(),
+            'cronjobHour'       => $cronjob->getHour(),
+            'cronjobDayOfMonth' => $cronjob->getDayOfMonth(),
+            'cronjobMonth'      => $cronjob->getMonth(),
+            'cronjobDayOfWeek'  => $cronjob->getDayOfWeek(),
         );
 
         if (null === ($id = $cronjob->getId())) {
             unset($data['id']);
-            $this->getDbTable()->insert($data);
+            return $this->getDbTable()->insert($data);
         } else {
-            $this->getDbTable()->update($data, array('id = ?' => $id));
+            return $this->getDbTable()->update($data, array('id = ?' => $id));
         }
     }
 
@@ -27,7 +32,7 @@ class Application_Model_CronjobMapper extends Cronphp_Mapper {
         $result = $this->getDbTable()->find($id);
 
         if (0 == count($result)) {
-            return;
+            return false;
         }
 
         $row = $result->current();
@@ -41,6 +46,8 @@ class Application_Model_CronjobMapper extends Cronphp_Mapper {
                 ->setDayOfMonth($row->cronjobDayOfMonth)
                 ->setMonth($row->cronjobMonth)
                 ->setDayOfWeek($row->cronjobDayOfWeek);
+
+        return true;
     }
 
     public function fetchAll() {
@@ -51,14 +58,14 @@ class Application_Model_CronjobMapper extends Cronphp_Mapper {
             $entry = new Application_Model_Cronjob();
 
             $entry->setId($row->cronjobId)
-                    ->setServer($row->cronjobServer)
-                    ->setPath($row->cronjobPath)
-                    ->setUser($row->cronjobUser)
-                    ->setMinute($row->cronjobMinute)
-                    ->setHour($row->cronjobHour)
-                    ->setDayOfMonth($row->cronjobDayOfMonth)
-                    ->setMonth($row->cronjobMonth)
-                    ->setDayOfWeek($row->cronjobDayOfWeek);
+                  ->setServer($row->cronjobServer)
+                  ->setPath($row->cronjobPath)
+                  ->setUser($row->cronjobUser)
+                  ->setMinute($row->cronjobMinute)
+                  ->setHour($row->cronjobHour)
+                  ->setDayOfMonth($row->cronjobDayOfMonth)
+                  ->setMonth($row->cronjobMonth)
+                  ->setDayOfWeek($row->cronjobDayOfWeek);
 
             $entries[] = $entry;
         }
@@ -71,6 +78,7 @@ class Application_Model_CronjobMapper extends Cronphp_Mapper {
         $stmt->bindValue(':path', $path, PDO::PARAM_STR);
         $stmt->bindValue(':server', $server, PDO::PARAM_STR);
         $stmt->execute();
+        $this->getDbTable()->LOL();
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
