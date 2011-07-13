@@ -10,6 +10,9 @@ class CronjobController extends Zend_Controller_Action {
     public function indexAction() {
         // action body
         $this->view->form = new Application_Form_Cronjob();
+
+        $cronjobs = new Application_Model_CronjobMapper();
+        $this->view->cronjobs = $cronjobs->fetchAll();
     }
 
     public function createAction() {
@@ -19,7 +22,7 @@ class CronjobController extends Zend_Controller_Action {
         $valid = $form->isValid($_POST);
 
         if ($valid) {
-            $cronjob = new Application_Model_Cronjob($this->db);
+            $cronjob = new Application_Model_Cronjob();
             $cronjob->server = $_POST['server'];
             $cronjob->path = $_POST['path'];
             $cronjob->user = $_POST['user'];

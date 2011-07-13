@@ -31,6 +31,10 @@
         <modelFile modelName="Cronjob"/>
         <modelFile modelName="Log"/>
         <modelFile modelName="CronjobList"/>
+        <dbTableDirectory>
+          <dbTableFile dbTableName="Cronjob"/>
+        </dbTableDirectory>
+        <modelFile modelName="CronjobMapper"/>
       </modelsDirectory>
       <modulesDirectory>
         <moduleDirectory moduleName="api">
