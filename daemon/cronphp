@@ -38,30 +38,46 @@ if ((isset($options['d']) || isset($options['daemon'])) && (!isset($options['f']
         echo 'You can only run one instance at the time' . PHP_EOL;
     }*/
 
-    // Find currently installed crontab
-    $crontab = new CronPHP_Crontab($config['crontab']);
-    $crontab->clear(); // TODO: Avoid this.
+    $keepRunning = false;
+    $client = new CronPHP_Rest_Client();
 
     do {
-        // Check joblist
-        // TODO: Add try/catch to handle when server is down
-        $jobs = json_decode(file_get_contents($config['endpoint'] . 'list/?server=' . $_ENV['HOSTNAME']));
+        if ($keepRunning) {
+            // Sleep for a while
+            sleep(10);
+        }
+
+        // TODO: Figure out if we need to listen to signal for stoping the job
+        $keepRunning = true;
+
+        // Fetch the joblist from server
+        $jobs = json_decode($client->get($config['endpoint'] . 'list/?server=' . $_ENV['HOSTNAME']));
+
+        if (!is_array($jobs)) {
+            trigger_error('Server did not return valid data when requesting list of cronjobs.', E_USER_WARNING);
+
+            continue;
+        }
+
+        // Read the currently installed crontab
+        $installedCrontab = new CronPHP_Crontab($config['crontab']);
+        $installedCrontab->parse();
+
+        // Create a clean crontab
+        $newCrontab = new CronPHP_Crontab($config['crontab']);
 
         // Create the new crontab
         foreach ($jobs as $job) {
             $cronjob = new CronPHP_Crontab_Cronjob($job);
-            $crontab->addJob($cronjob);
+            $newCrontab->addJob($cronjob);
         }
 
-        // Install the new crontab
-        // TODO: Make sure it only writes when changed
-        $crontab->write();
-
-        // Sleep for a while
-        sleep(60);
-
-        // TODO: Figure out if we need to listen to signal for stoping the job
-        $keepRunning = true;
+        var_dump($installedCrontab, $newCrontab, $installedCrontab != $newCrontab);
+        // Compare the crontabs to see if anything has changed.
+        if ($installedCrontab != $newCrontab) {
+            // Install the new crontab
+            $newCrontab->write();
+        }
     } while ($keepRunning);
 } else if ((isset($options['d']) || isset($options['daemon'])) && (isset($options['f']) || isset($options['file']))) {
     echo 'You can\'t specify both daemon mode and file argument' . PHP_EOL;
@@ -114,21 +130,38 @@ if ((isset($options['d']) || isset($options['daemon'])) && (!isset($options['f']
 //fclose($fp);
 
 class CronPHP_Rest_Client {
-    private $client;
 
-    public function __construct() {
-        $this->client = curl_init();
+    private function getClient() {
+        $client = curl_init();
+        curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($client, CURLOPT_HEADER, false);
+
+        return $client;
+    }
+
+    public function get($url) {
+        $client = $this->getClient();
+
+        curl_setopt($client, CURLOPT_URL, $url);
+        curl_setopt($client, CURLOPT_POST, false);
+
+        $response = curl_exec($client);
+        curl_close($client);
+
+        return $response;
     }
 
     public function post($url, $data) {
-        curl_setopt($this->client, CURLOPT_URL, $url);
-        curl_setopt($this->client, CURLOPT_HEADER, 0);
-        curl_setopt($this->client, CURLOPT_POST, true);
-        curl_setopt($this->client, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($this->client, CURLOPT_POSTFIELDS, 'data=' . $data);
+        $client = $this->getClient();
 
-        curl_exec($this->client);
-        curl_close($this->client);
+        curl_setopt($client, CURLOPT_URL, $url);
+        curl_setopt($client, CURLOPT_POST, true);
+        curl_setopt($client, CURLOPT_POSTFIELDS, 'data=' . $data);
+
+        $response = curl_exec($client);
+        curl_close($client);
+
+        return $response;
     }
 }
 
@@ -136,22 +169,47 @@ class CronPHP_Crontab {
     private $cronfile;
     private $crontab = array();
 
-    public function __construct($cronfile) {
-        $this->cronfile = $cronfile;
+    public function __construct($cronfile = null) {
+        if (!is_null($cronfile)) {
+            $this->cronfile = $cronfile;
+        }
+    }
+
+    public function parse($cronfile = null) {
+        if (!is_null($cronfile)) {
+            $this->cronfile = $cronfile;
+        } else if (is_null($this->cronfile)) {
+            throw new InvalidArgumentException('No cronfile was specified.');
+        }
 
         if (!is_file($this->cronfile)) {
             $this->write();
         } else if (is_readable($this->cronfile)) {
             $crontab = file($this->cronfile);
-            //$crontab = array('0 * * * * user path');
             foreach ($crontab as $line) {
-                $job = new CronPHP_Crontab_Cronjob($line);
+                $job = new CronPHP_Crontab_Cronjob(trim($line));
                 $this->addJob($job);
             }
         } else {
             echo 'Unable to read crontab.' . PHP_EOL;
             exit(1);
         }
+    }
+
+    public function write($cronfile = null) {
+        if (!is_null($cronfile)) {
+            $this->cronfile = $cronfile;
+        } else if (is_null($this->cronfile)) {
+            throw new InvalidArgumentException('No cronfile was specified.');
+        }
+
+        if (!is_writable(dirname($this->cronfile))) {
+            echo 'Unable to install crontab. Missing write access to "' . $this->cronfile . '"' . PHP_EOL;
+            exit(1);
+        }
+
+        // TODO: Make sure we don't write any bogus cronjobs(wrong time, missing file, invalid user, etc)
+        return file_put_contents($this->cronfile, $this->crontab);
     }
 
     public function addJob(CronPHP_Crontab_Cronjob $job) {
@@ -164,16 +222,6 @@ class CronPHP_Crontab {
         unset($this->crontab[$path]);
 
         return $this;
-    }
-
-    public function write() {
-        if (!is_writable(dirname($this->cronfile))) {
-            echo 'Unable to install crontab. Missing write access to "' . $this->cronfile . '"' . PHP_EOL;
-            exit(1);
-        }
-
-        // TODO: Make sure we don't write any bogus cronjobs(wrong time, missing file, invalid user, etc)
-        return file_put_contents($this->cronfile, $this->crontab);
     }
 
     public function clear() {
@@ -210,7 +258,15 @@ class CronPHP_Crontab_Cronjob {
     }
 
     public function parseJob($line) {
-        list($minute, $hour, $dayOfMonth, $month, $dayOfWeek, $user, $path) = sscanf($line, '%s %s %s %s %s %s %s');
+        if (!preg_match('#^([0-9/* ]+) (\w+) ([\w/]+/cronphp -f) "(.+)"$#', $line, $matches)) {
+            throw new InvalidArgumentException('Line does not match valid format.');
+        }
+
+        // Expand information from matches
+        list($match, $time, $user, $cronphp, $path) = $matches;
+
+        // Expand run times
+        list($minute, $hour, $dayOfMonth, $month, $dayOfWeek) = explode(' ', $time);
 
         return array('path' => $path, 'user' => $user, 'minute' => $minute,  'hour' => $hour, 'dayOfMonth' => $dayOfMonth, 'month' => $month, 'dayOfWeek' => $dayOfWeek);
     }
