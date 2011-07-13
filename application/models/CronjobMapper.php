@@ -1,6 +1,6 @@
 <?php
 class Application_Model_CronjobMapper extends Cronphp_Mapper {
-    public function getDbTable() {
+    protected function getDbTable() {
         if (null === $this->_dbTable) {
             $this->setDbTable('Application_Model_DbTable_Cronjob');
         }
@@ -28,6 +28,7 @@ class Application_Model_CronjobMapper extends Cronphp_Mapper {
         }
     }
 
+
     public function find($id, Application_Model_Cronjob $cronjob) {
         $result = $this->getDbTable()->find($id);
 
@@ -37,15 +38,7 @@ class Application_Model_CronjobMapper extends Cronphp_Mapper {
 
         $row = $result->current();
 
-        $cronjob->setId($row->cronjobId)
-                ->setServer($row->cronjobServer)
-                ->setPath($row->cronjobPath)
-                ->setUser($row->cronjobUser)
-                ->setMinute($row->cronjobMinute)
-                ->setHour($row->cronjobHour)
-                ->setDayOfMonth($row->cronjobDayOfMonth)
-                ->setMonth($row->cronjobMonth)
-                ->setDayOfWeek($row->cronjobDayOfWeek);
+        $this->fill($row, $cronjob);
 
         return true;
     }
@@ -57,15 +50,7 @@ class Application_Model_CronjobMapper extends Cronphp_Mapper {
         foreach ($resultSet as $row) {
             $entry = new Application_Model_Cronjob();
 
-            $entry->setId($row->cronjobId)
-                  ->setServer($row->cronjobServer)
-                  ->setPath($row->cronjobPath)
-                  ->setUser($row->cronjobUser)
-                  ->setMinute($row->cronjobMinute)
-                  ->setHour($row->cronjobHour)
-                  ->setDayOfMonth($row->cronjobDayOfMonth)
-                  ->setMonth($row->cronjobMonth)
-                  ->setDayOfWeek($row->cronjobDayOfWeek);
+            $this->fill($row, $entry);
 
             $entries[] = $entry;
         }
@@ -74,14 +59,33 @@ class Application_Model_CronjobMapper extends Cronphp_Mapper {
     }
 
     public function getByPath($path, $server) {
-        $stmt = $this->pdo->prepare('SELECT cronjobId FROM cronjobs WHERE cronjobPath = :path AND cronjobServer = :server LIMIT 1');
-        $stmt->bindValue(':path', $path, PDO::PARAM_STR);
-        $stmt->bindValue(':server', $server, PDO::PARAM_STR);
-        $stmt->execute();
-        $this->getDbTable()->LOL();
+        $db = $this->getDbTable();
 
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $select =  $db->select()
+                    ->where('cronjobPath = ?', $path)
+                    ->where('cronjobServer = ?', $server);
 
-        return $this->getById($result['cronjobId']);
+        $result = $db->fetchRow($select);
+
+        if (0 == count($result)) {
+            return;
+        }
+
+        $entry = new Application_Model_Cronjob();
+        $this->fill($result, $entry);
+
+        return $entry;
+    }
+
+    private function fill($row, Application_Model_Cronjob $cronjob) {
+        $cronjob->setId($row->cronjobId)
+                ->setServer($row->cronjobServer)
+                ->setPath($row->cronjobPath)
+                ->setUser($row->cronjobUser)
+                ->setMinute($row->cronjobMinute)
+                ->setHour($row->cronjobHour)
+                ->setDayOfMonth($row->cronjobDayOfMonth)
+                ->setMonth($row->cronjobMonth)
+                ->setDayOfWeek($row->cronjobDayOfWeek);
     }
 }

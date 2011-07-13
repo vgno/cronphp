@@ -16,5 +16,5 @@ abstract class Cronphp_Mapper {
         return $this;
     }
 
-    abstract public function getDbTable();
+    abstract protected function getDbTable();
 }
