@@ -104,4 +104,5 @@ class Application_Model_Cronjob extends Cronphp_Model {
     public function __toString() {
         return $this->path;
     }
+
 }

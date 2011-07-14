@@ -49,7 +49,29 @@ class Application_Model_CronjobMapper extends Cronphp_Mapper {
         $entries   = array();
         foreach ($resultSet as $row) {
             $entry = new Application_Model_Cronjob();
+            $this->fill($row, $entry);
 
+            $entries[] = $entry;
+        }
+
+        return $entries;
+    }
+
+    public function getByServer($server) {
+        $db = $this->getDbTable();
+
+        $select =  $db->select()
+                    ->where('cronjobServer = ?', $server);
+
+        $result = $db->fetchAll($select);
+
+        if (0 == count($result)) {
+            return;
+        }
+
+        $entries = array();
+        foreach ($result as $row) {
+            $entry = new Application_Model_Cronjob();
             $this->fill($row, $entry);
 
             $entries[] = $entry;

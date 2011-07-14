@@ -52,7 +52,6 @@
           </controllersDirectory>
           <formsDirectory enabled="false"/>
           <layoutsDirectory enabled="false"/>
-          <modelsDirectory/>
           <viewsDirectory>
             <viewScriptsDirectory>
               <viewControllerScriptsDirectory forControllerName="List">
