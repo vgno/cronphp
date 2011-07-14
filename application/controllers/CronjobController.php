@@ -38,20 +38,19 @@ class CronjobController extends Zend_Controller_Action {
         $valid = $this->view->form->isValid($_POST);
 
         if ($valid) {
+            $values = $this->view->form->getValues();
+
             $cronjob = new Application_Model_Cronjob();
-            $cronjob->server = $_POST['server'];
-            $cronjob->path = $_POST['path'];
-            $cronjob->user = $_POST['user'];
-            $cronjob->minute = $_POST['minute'];
-            $cronjob->hour = $_POST['hour'];
-            $cronjob->dayOfMonth = $_POST['dayOfMonth'];
-            $cronjob->month = $_POST['month'];
-            $cronjob->dayOfWeek = $_POST['dayOfWeek'];
+            $cronjob->server = $values['server'];
+            $cronjob->path = $values['path'];
+            $cronjob->user = $values['user'];
+            $cronjob->minute = $values['minute'];
+            $cronjob->hour = $values['hour'];
+            $cronjob->dayOfMonth = $values['dayOfMonth'];
+            $cronjob->month = $values['month'];
+            $cronjob->dayOfWeek = $values['dayOfWeek'];
 
-            #$this->cronjobs->save($cronjob);
-        }
-
-        if ($valid) {
+            $this->cronjobs->save($cronjob);
             $this->redirector->gotoSimple('index');
         }
 
