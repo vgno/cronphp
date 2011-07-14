@@ -101,55 +101,6 @@ class Application_Model_Cronjob extends Cronphp_Model {
         return $this->dayOfWeek;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public function getByPath($path, $server) {
-        $stmt = $this->pdo->prepare('SELECT cronjobId FROM cronjobs WHERE cronjobPath = :path AND cronjobServer = :server LIMIT 1');
-        $stmt->bindValue(':path', $path, PDO::PARAM_STR);
-        $stmt->bindValue(':server', $server, PDO::PARAM_STR);
-        $stmt->execute();
-
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $this->getById($result['cronjobId']);
-    }
-
-    public function save() {
-        $sql = 'INSERT INTO cronjobs SET
-            cronjobServer = "' . $this->server . '",
-            cronjobPath = "' . $this->path . '",
-            cronjobUser = "' . $this->user . '",
-            cronjobMinute = "' . $this->minute. '",
-            cronjobHour = "' . $this->hour . '",
-            cronjobDayOfMonth = "' . $this->dayOfMonth . '",
-            cronjobMonth = "' . $this->month . '",
-            cronjobDayOfWeek = "' . $this->dayOfWeek . '"';
-
-        $this->pdo->query($sql);
-    }
-
     public function __toString() {
         return $this->path;
     }
