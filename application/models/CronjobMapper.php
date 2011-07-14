@@ -77,8 +77,8 @@ class Application_Model_CronjobMapper extends Cronphp_Mapper {
         return $entry;
     }
 
-    private function fill($row, Application_Model_Cronjob $cronjob) {
-        $cronjob->setId($row->cronjobId)
+    protected function fill($row, $model) {
+        $model->setId($row->cronjobId)
                 ->setServer($row->cronjobServer)
                 ->setPath($row->cronjobPath)
                 ->setUser($row->cronjobUser)

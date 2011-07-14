@@ -17,4 +17,20 @@ abstract class Cronphp_Mapper {
     }
 
     abstract protected function getDbTable();
+    abstract protected function fill($row, $object);
+
+    public function fetchAll() {
+        $resultSet = $this->getDbTable()->fetchAll();
+
+        $entries   = array();
+        foreach ($resultSet as $row) {
+            $entry = new Application_Model_Log();
+
+            $this->fill($row, $entry);
+
+            $entries[] = $entry;
+        }
+
+        return $entries;
+    }
 }

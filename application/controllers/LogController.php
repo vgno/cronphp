@@ -4,19 +4,19 @@ class LogController extends Zend_Controller_Action {
 
     public function init() {
         /* Initialize action controller here */
-        $this->db = $this->getInvokeArg('bootstrap')->getResource('db');
+        $this->logs = new Application_Model_LogMapper();
+        $this->cronjobs= new Application_Model_CronjobMapper();
     }
 
     public function indexAction() {
         // action body
-        $logger = new Application_Model_Log($this->db);
 
-        $logs = $logger->getLog();
+        $logs = $this->logs->getLog();
         foreach ($logs as &$log) {
-            $job = new Application_Model_Cronjob($this->db);
-            $job->getById($log['logCronjobId']);
+            $job = new Application_Model_Cronjob();
+            $this->cronjobs->find($log->getCronjobId(), $job);
 
-            $log['cronjob'] = $job;
+            $log->setCronjob($job);
         }
         $this->view->list = $logs;
     }

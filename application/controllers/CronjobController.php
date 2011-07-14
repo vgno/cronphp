@@ -4,15 +4,14 @@ class CronjobController extends Zend_Controller_Action {
 
     public function init() {
         /* Initialize action controller here */
-        $this->db = $this->getInvokeArg('bootstrap')->getResource('db');
+        $this->cronjobs = new Application_Model_CronjobMapper();
     }
 
     public function indexAction() {
         // action body
         $this->view->form = new Application_Form_Cronjob();
 
-        $cronjobs = new Application_Model_CronjobMapper();
-        $this->view->cronjobs = $cronjobs->fetchAll();
+        $this->view->cronjobs = $this->cronjobs->fetchAll();
     }
 
     public function createAction() {
@@ -31,9 +30,9 @@ class CronjobController extends Zend_Controller_Action {
             $cronjob->dayOfMonth = $_POST['dayOfMonth'];
             $cronjob->month = $_POST['month'];
             $cronjob->dayOfWeek = $_POST['dayOfWeek'];
-            $cronjob->save();
-        }
 
+            $this->cronjobs->save($cronjob);
+        }
 
         $this->view->valid = $valid;
     }
