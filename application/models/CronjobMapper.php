@@ -12,7 +12,7 @@ class Application_Model_CronjobMapper extends Cronphp_Mapper {
         $data = array(
             'cronjobServer'     => $cronjob->getServer(),
             'cronjobPath'       => $cronjob->getPath(),
-            'cronjobUser'       => $conrjob->getUser(),
+            'cronjobUser'       => $cronjob->getUser(),
             'cronjobMinute'     => $cronjob->getMinute(),
             'cronjobHour'       => $cronjob->getHour(),
             'cronjobDayOfMonth' => $cronjob->getDayOfMonth(),
@@ -24,7 +24,7 @@ class Application_Model_CronjobMapper extends Cronphp_Mapper {
             unset($data['id']);
             return $this->getDbTable()->insert($data);
         } else {
-            return $this->getDbTable()->update($data, array('id = ?' => $id));
+            return $this->getDbTable()->update($data, array('cronjobId = ?' => $id));
         }
     }
 

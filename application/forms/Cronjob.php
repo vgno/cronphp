@@ -3,8 +3,7 @@ class Application_Form_Cronjob extends Zend_Form {
 
     public function init() {
         /* Form Elements & Other Definitions Here ... */
-        $this->setAction('/cronphp/cronjob/create')
-             ->setAttrib('class', 'dataSet')
+        $this->setAttrib('class', 'dataSet')
              ->setMethod('post');
 
         $this->addElements(array(
