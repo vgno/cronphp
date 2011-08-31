@@ -4,27 +4,32 @@
 $arguments = array(
     'd' => 'daemon',
     'f:' => 'file:',
+    'i:' => 'id:',
     'c:' => 'config:'
 );
 
-$defaults = array(
+$defaultArguments = array(
     'c' => '/etc/cronphp',
     'config' => '/etc/cronphp',
 );
-$defaults = array(
+$defaultArguments = array(
     'config' => 'cronphp.config',
 );
 
-$options = array_merge($defaults, getopt(implode('', array_keys($arguments)), $arguments));
+$options = array_merge($defaultArguments, getopt(implode('', array_keys($arguments)), $arguments));
 
 // Load configuration
 if (is_file($options['config']) && is_readable($options['config'])) {
-    $config = parse_ini_file($options['config']);
+    $userConfig = parse_ini_file($options['config']);
 
-    // TODO: Make sure we have a valid configuration
+    // Create a sane configuration
+    $config = array_merge(array(
+        'lockfile_directory' => '/var/run/',
+        'update_interval' => 6,
+    ), $userConfig);
 } else {
     echo 'No configuration was found.' . PHP_EOL;
-    exit(22);
+    exit(22); // Invalid argument
 }
 
 // Only run in daemon mode if no file is passed
@@ -33,35 +38,31 @@ if ((isset($options['d']) || isset($options['daemon'])) && (!isset($options['f']
     // Daemon
 
     // File locking
-    /*$fp = fopen('/var/run/cronphp.pid', 'c');
-    if (!flock($fp, LOCK_EX)) {
-        echo 'You can only run one instance at the time' . PHP_EOL;
-    }*/
+    $fp = fopen($config['lockfile_directory'] . DIRECTORY_SEPARATOR . 'cronphp.pid', 'c');
 
-    $keepRunning = false;
+    if (!is_resource($fp)) {
+        echo 'Could not obtain lock.' . PHP_EOL;
+        exit(13); // Permission denied
+    }
+
+    if (!flock($fp, LOCK_EX)) {
+        echo 'CronPHP is allready running on this machine.' . PHP_EOL;
+        exit(16); // Device or resource busy
+    }
+
     $client = new CronPHP_Rest_Client();
 
     do {
-        if ($keepRunning) {
-            // Sleep for a while
-            sleep(10);
-        }
-
-        // TODO: Figure out if we need to listen to signal for stoping the job
-        $keepRunning = true;
+        sleep($config['update_interval']); // Sleep is placed here to avoid hammering the server
 
         // Fetch the joblist from server
         $jobs = json_decode($client->get($config['endpoint'] . 'list/?server=' . $_ENV['HOSTNAME']));
 
         if (!is_array($jobs)) {
-            trigger_error('Server did not return valid data when requesting list of cronjobs.', E_USER_WARNING);
+            trigger_error('The server did not return valid list of cronjobs.', E_USER_WARNING);
 
             continue;
         }
-
-        // Read the currently installed crontab
-        $installedCrontab = new CronPHP_Crontab($config['crontab']);
-        $installedCrontab->parse();
 
         // Create a clean crontab
         $newCrontab = new CronPHP_Crontab($config['crontab']);
@@ -72,30 +73,42 @@ if ((isset($options['d']) || isset($options['daemon'])) && (!isset($options['f']
             $newCrontab->addJob($cronjob);
         }
 
-        // Compare the crontabs to see if anything has changed.
-        if ($installedCrontab != $newCrontab) {
-            // Install the new crontab
-            $newCrontab->write();
-        }
-    } while ($keepRunning);
+        // Install the new crontab
+        $newCrontab->write();
+    } while (true);
 } else if ((isset($options['d']) || isset($options['daemon'])) && (isset($options['f']) || isset($options['file']))) {
     echo 'You can\'t specify both daemon mode and file argument' . PHP_EOL;
-    exit(1);
+    exit(1); // Operation not permitted
 } else {
+    // Run a scheduled job, log everything and post back to server after completed execution
 
-    // Cronjob run
+    // Find the job to execute
     if (isset($options['f']) || isset($options['file'])) {
         $file = isset($options['f']) ? $options['f'] : $options['file'];
     } else {
         echo 'No specified job was found.' . PHP_EOL;
-        exit(22);
+        exit(22); // Invalid argument
     }
 
     // File locking
-    /*$fp = fopen('/var/run/cronphp.' . crc32($file) . '.pid', 'c');
+    $fp = fopen($config['lockfile_directory'] . DIRECTORY_SEPARATOR . 'cronphp.' . crc32($file) . '.pid', 'c');
+
+    if (!is_resource($fp)) {
+        echo 'Could not obtain lock.' . PHP_EOL;
+        exit(13); // Permission denied
+    }
+
     if (!flock($fp, LOCK_EX)) {
-        echo 'You can only run one instance at the time' . PHP_EOL;
-    }*/
+        echo 'CronPHP is allready running this cronjob on this machine.' . PHP_EOL;
+        exit(16); // Device or resource busy
+    }
+
+    // Find the ID used for logging
+    if (isset($options['i']) || isset($options['id'])) {
+        $logId = isset($options['i']) ? $options['i'] : $options['id'];
+    } else {
+        $logId = null;
+    }
 
     // Start timer
     $start = time();
@@ -111,13 +124,14 @@ if ((isset($options['d']) || isset($options['daemon'])) && (!isset($options['f']
     // Prepare a request to logging service
     $data = json_encode(
         array(
-            'path'    => $file,
-            'server' => $_ENV['HOSTNAME'],
-            'start'  => '@' . $start,
-            'end'    => '@' . $end,
-            'runTime' => $endMs - $startMs,
-            'response' => $return,
-            'output' => implode($output, PHP_EOL),
+            'id'        => $logId,
+            'path'      => $file,
+            'server'    => $_ENV['HOSTNAME'],
+            'start'     => '@' . $start,
+            'end'       => '@' . $end,
+            'runTime'   => $endMs - $startMs,
+            'response'  => $return,
+            'output'    => implode($output, PHP_EOL),
         )
     );
 
@@ -126,7 +140,8 @@ if ((isset($options['d']) || isset($options['daemon'])) && (!isset($options['f']
 }
 
 // Relase file lock
-//fclose($fp);
+fclose($fp);
+exit(0);
 
 class CronPHP_Rest_Client {
 
@@ -190,8 +205,7 @@ class CronPHP_Crontab {
                 $this->addJob($job);
             }
         } else {
-            echo 'Unable to read crontab.' . PHP_EOL;
-            exit(1);
+            throw new Exception('Unable to read crontab.');
         }
     }
 
@@ -203,8 +217,7 @@ class CronPHP_Crontab {
         }
 
         if (!is_writable(dirname($this->cronfile))) {
-            echo 'Unable to install crontab. Missing write access to "' . $this->cronfile . '"' . PHP_EOL;
-            exit(1);
+            throw new RuntimeException('Unable to install crontab. Missing write access to "' . $this->cronfile . '"');
         }
 
         // TODO: Make sure we don't write any bogus cronjobs(wrong time, missing file, invalid user, etc)
@@ -212,13 +225,13 @@ class CronPHP_Crontab {
     }
 
     public function addJob(CronPHP_Crontab_Cronjob $job) {
-        $this->crontab[$job->path] = $job;
+        $this->crontab[$job->id] = $job;
 
         return $this;
     }
 
-    public function removeJob($path) {
-        unset($this->crontab[$path]);
+    public function removeJob($id) {
+        unset($this->crontab[$id]);
 
         return $this;
     }
@@ -231,6 +244,7 @@ class CronPHP_Crontab {
 }
 
 class CronPHP_Crontab_Cronjob {
+    public $id;
     public $path;
     public $user;
     public $minute = '0';
@@ -247,6 +261,7 @@ class CronPHP_Crontab_Cronjob {
 
         $job = (array) $job;
 
+        $this->id = $job['id'];
         $this->path = $job['path'];
         $this->user = $job['user'];
         $this->minute = $job['minute'];
@@ -257,20 +272,19 @@ class CronPHP_Crontab_Cronjob {
     }
 
     public function parseJob($line) {
-        if (!preg_match('#^([0-9/* ]+) (\w+) (' . __FILE__ . ' -f) "(.+)"$#', $line, $matches)) {
+        if (!preg_match('#^([0-9/* ]+) (\w+) (' . __FILE__ . ' -i (\d+) -f) "(.+)"$#', $line, $matches)) {
             throw new InvalidArgumentException('Line does not match valid format.');
         }
-
         // Expand information from matches
-        list($match, $time, $user, $cronphp, $path) = $matches;
+        list($match, $time, $user, $cronphp, $jobid, $path) = $matches;
 
         // Expand run times
         list($minute, $hour, $dayOfMonth, $month, $dayOfWeek) = explode(' ', $time);
 
-        return array('path' => $path, 'user' => $user, 'minute' => $minute,  'hour' => $hour, 'dayOfMonth' => $dayOfMonth, 'month' => $month, 'dayOfWeek' => $dayOfWeek);
+        return array('id' => $jobid, 'path' => $path, 'user' => $user, 'minute' => $minute,  'hour' => $hour, 'dayOfMonth' => $dayOfMonth, 'month' => $month, 'dayOfWeek' => $dayOfWeek);
     }
 
     public function __toString() {
-        return sprintf('%s %s %s %s %s %s %s -f "%s"', $this->minute, $this->hour, $this->dayOfMonth, $this->month, $this->dayOfWeek, $this->user, __FILE__ , $this->path) .  PHP_EOL;
+        return sprintf('%s %s %s %s %s %s %s -i %d -f "%s"', $this->minute, $this->hour, $this->dayOfMonth, $this->month, $this->dayOfWeek, $this->user, __FILE__ , $this->id, $this->path) .  PHP_EOL;
     }
 }
