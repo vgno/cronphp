@@ -32,6 +32,7 @@ $defaults = array(
                 'password' => '',
             ),
         ),
+        'router' => array('routes' => require APPLICATION_PATH . '/configs/routes.php'),
     ),
 );
 
