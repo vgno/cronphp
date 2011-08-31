@@ -1,6 +1,7 @@
 <?php
 class Api_Model_ListResponse extends Application_Model_Cronjob {
 
+    public $id;
     public $path;
     public $user;
     public $minute;
@@ -10,6 +11,7 @@ class Api_Model_ListResponse extends Application_Model_Cronjob {
     public $dayOfWeek;
 
     public function __construct(Application_Model_Cronjob $cronjob) {
+        $this->id           = $cronjob->getId();
         $this->path         = $cronjob->getPath();
         $this->user         = $cronjob->getUser();
         $this->minute       = $cronjob->getMinute();

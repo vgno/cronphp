@@ -1,12 +1,10 @@
 <?php
 class CronjobController extends Zend_Controller_Action {
-
     protected $cronjobs;
     protected $redirector;
     protected $form;
 
     public function init() {
-        /* Initialize action controller here */
         $this->cronjobs = new Application_Model_CronjobMapper();
         $this->redirector = $this->_helper->getHelper('Redirector');
     }
@@ -16,23 +14,23 @@ class CronjobController extends Zend_Controller_Action {
             $this->form = new Application_Form_Cronjob();
         }
 
-        $this->form->setAction('cronjob/create');
-
         return $this->form;
     }
 
     public function indexAction() {
-        // action body
         $this->view->form = $this->getForm();
 
         $this->view->cronjobs = $this->cronjobs->fetchAll();
+    }
 
-        $this->render('form');
-        $this->render('index');
+    public function listAction() {
+        $hostname = $this->getRequest()->getParam('hostname');
+
+        $this->view->hostname = $hostname;
+        $this->view->cronjobs = $this->cronjobs->fetchAll();
     }
 
     public function createAction() {
-        // action body
         $this->view->form = $this->getForm();
 
         $valid = $this->view->form->isValid($_POST);

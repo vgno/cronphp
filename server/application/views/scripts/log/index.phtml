@@ -19,12 +19,12 @@
   <tbody>
 <?php foreach ($this->list as $log) { ?>
     <tr>
-        <td><?php echo $log->getCronjob() ?></td>
-        <td><?php echo $log->getServer() ?></td>
-        <td><?php echo $log->getStart() ?></td>
-        <td><?php echo $log->getEnd() ?></td>
-        <td><?php echo $log->getRunTime() ?></td>
-        <td><?php echo $log->getResponse() ?></td>
+        <td><?php echo $log->cronjob ?></td>
+        <td><?php echo $log->hostname ?></td>
+        <td><?php echo $log->start ?></td>
+        <td><?php echo $log->end ?></td>
+        <td><?php echo $log->runTime ?></td>
+        <td><?php echo $log->response ?></td>
     </tr>
 <?php } ?>
   </tbody>

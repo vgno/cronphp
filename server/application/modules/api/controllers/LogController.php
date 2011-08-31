@@ -12,21 +12,27 @@ class Api_LogController extends Zend_Controller_Action {
         if (!isset($data->server)) {
             $this->view->response = array('success' => false, 'error' => 'Missing server');
         } else {
-            $pdo = $this->getInvokeArg('bootstrap')->getResource('pdo');
-            $logger = new Application_Model_Log($pdo);
-            $cronjob = new Application_Model_Cronjob($pdo);
+            $logs = new Cronphp_Model_Log();
+            $cronjob = new Cronphp_Model_Cronjob();
 
-            $cronjob->getByPath($data->path, $data->server);
+            // Verify that the reported cronjob is running on the correct
+            // server and reports the correct id.
+            $job = $cronjob->findByPath($data->id, $data->path, $data->server);
 
-            $jobId = $cronjob->id;
-            $server = $data->server;
             $start = new DateTime($data->start);
             $end = new DateTime($data->end);
-            $runTime = $data->runTime;
-            $response = $data->response;
-            $output = $data->output;
 
-            $result = $logger->log($jobId, $server, $start, $end, $runTime, $response, $output);
+            $log = array(
+                'cronjobId' => $data->id,
+                'hostname' => $data->server,
+                'start' => $start->format('Y-m-d H:I:s'),
+                'end' => $end->format('Y-m-d H:I:s'),
+                'runTime' => $data->runTime,
+                'response' => $data->response,
+                'output' => $data->output,
+            );
+
+            $result = $logs->insert($log);
             $this->view->response = array('success' => $result);
         }
     }

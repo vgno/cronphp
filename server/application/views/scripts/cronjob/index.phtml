@@ -1,38 +1,9 @@
-<h2>Installed cronjobs</h2>
-<table class="dataList" style="width: 100%">
-<col class="string" />
-<col class="string" />
-<col class="string" />
-<col class="string" />
-<col class="string" />
-<col class="string" />
-<col class="string" />
-<col class="string" />
+<h2>Create new cronjob</h2>
+<?php
+echo $this->form->setAction($this->url(array(), 'cronjobs-create'));
+?>
 
-  <thead>
-    <tr>
-        <th scope="col">Minute</th>
-        <th scope="col">Hour</th>
-        <th scope="col">Day of month</th>
-        <th scope="col">Month</th>
-        <th scope="col">Day of week</th>
-        <th scope="col">User</th>
-        <th scope="col">Path</th>
-        <th scope="col">Server</th>
-    </tr>
-  </thead>
-  <tbody>
-<?php foreach ($this->cronjobs as $job) { ?>
-    <tr>
-        <td><?php echo $job->getMinute() ?></td>
-        <td><?php echo $job->getHour() ?></td>
-        <td><?php echo $job->getDayOfMonth() ?></td>
-        <td><?php echo $job->getMonth() ?></td>
-        <td><?php echo $job->getDayOfWeek() ?></td>
-        <td><?php echo $job->getUser() ?></td>
-        <td><?php echo $job->getPath() ?></td>
-        <td><?php echo $job->getServer() ?></td>
-    </tr>
-<?php } ?>
-  </tbody>
-</table>
+<h2>Installed cronjobs</h2>
+<?php
+echo $this->partial('cronjob/list-partial.phtml', array('cronjobs' => $this->cronjobs));
+?>
