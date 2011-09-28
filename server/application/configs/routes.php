@@ -9,6 +9,19 @@ return array(
             'action' => 'index',
         ),
     ),
+    'server' => array(
+        'type' => 'Zend_Controller_Router_Route_Regex',
+        'route' => 'server/(\w+)',
+        'defaults' => array(
+            'controller' => 'server',
+            'action' => 'view',
+            'server' => '',
+        ),
+        'map' => array(
+            1 => 'server',
+        ),
+        'reverse' => 'server/%s',
+    ),
     'cronjob' => array(
         'type' => 'Zend_Controller_Router_Route_Static',
         'route' => 'cronjob',
@@ -19,19 +32,6 @@ return array(
                     'controller' => 'cronjob',
                     'action' => 'index',
                 ),
-            ),
-            'list' => array(
-                'type' => 'Zend_Controller_Router_Route_Regex',
-                'route' => 'list/(\w+)',
-                'defaults' => array(
-                    'controller' => 'cronjob',
-                    'action' => 'list',
-                    'hostname' => '',
-                ),
-                'map' => array(
-                    1 => 'hostname',
-                ),
-                'reverse' => 'cronjobs/%s',
             ),
             'create' => array(
                 'type' => 'Zend_Controller_Router_Route_Static',

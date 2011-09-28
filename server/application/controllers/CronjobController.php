@@ -24,13 +24,6 @@ class CronjobController extends Zend_Controller_Action {
         $this->view->inactiveCronjobs = $this->cronjobs->fetchAll($this->cronjobs->select()->where('active = 0'));
     }
 
-    public function listAction() {
-        $hostname = $this->getRequest()->getParam('hostname');
-
-        $this->view->hostname = $hostname;
-        $this->view->cronjobs = $this->cronjobs->fetchAll($this->cronjobs->select()->where('hostname = ?', $hostname));
-    }
-
     public function createAction() {
         $this->view->form = $this->getForm();
 
@@ -65,7 +58,11 @@ class CronjobController extends Zend_Controller_Action {
         $cronjob->$toggle(); // The regexp in the route validates if its either enable or disable
         $success = $cronjob->save();
 
-        $this->_helper->json(array('success' => (bool) $success));
+        if ($this->getRequest()->isXmlHttpRequest()) {
+            $this->_helper->json(array('success' => (bool) $success));
+        } else {
+            $this->_helper->redirector->gotoUrl($this->getRequest()->get('HTTP_REFERER'));
+        }
     }
 
     public function deleteAction() {

@@ -12,4 +12,15 @@ class ServerController extends Zend_Controller_Action {
             var_dump($server->hostname);
         }
     }
+
+    public function viewAction() {
+        $hostname = $this->getRequest()->getParam('server');
+        $this->view->hostname = $hostname;
+
+        $cronjobs = new Cronphp_Model_Cronjob();
+        $this->view->cronjobs = $cronjobs->fetchAll($cronjobs->select()->where('cronjobServer = ?', $hostname));
+
+        $logs = new Cronphp_Model_Log();
+        $this->view->log = $logs->getLogForServer($hostname);
+    }
 }
