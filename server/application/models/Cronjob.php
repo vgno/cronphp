@@ -14,8 +14,21 @@ class Cronphp_Model_Cronjob extends Zend_Db_Table_Abstract {
 
 class Cronphp_Model_Cronjob_Row extends Zend_Db_Table_Row_Abstract {
 
+    public function isActive() {
+        return (bool) $this->active;
+    }
+
+    public function enable() {
+        $this->active = 1;
+        return $this;
+    }
+
+    public function disable() {
+        $this->active = 0;
+        return $this;
+    }
+
     public function __toString() {
-        var_dump($this);
         return $this->name;
     }
 }

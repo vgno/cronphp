@@ -1,9 +1,15 @@
-<h2>Create new cronjob</h2>
 <?php
-echo $this->form->setAction($this->url(array(), 'cronjobs-create'));
+$this->bodyClass = 'cronjob-list';
+$this->pageName = 'Cronjobs';
+$this->tagline = 'List of all configured cronjobs';
 ?>
 
-<h2>Installed cronjobs</h2>
+<h2>Active cronjobs</h2>
 <?php
-echo $this->partial('cronjob/list-partial.phtml', array('cronjobs' => $this->cronjobs));
+echo $this->partial('cronjob/list-partial.phtml', array('listname' => 'active', 'cronjobs' => $this->activeCronjobs));
+?>
+
+<h2>Inactive cronjobs</h2>
+<?php
+echo $this->partial('cronjob/list-partial.phtml', array('listname' => 'inactive', 'cronjobs' => $this->inactiveCronjobs));
 ?>

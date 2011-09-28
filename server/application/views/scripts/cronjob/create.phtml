@@ -1,4 +1,5 @@
-<br /><br />
-<div id="view-content">
-	<p>View script for controller <b>Cronjob</b> and script/action name <b>create</b></p>
-</div>
+<?php
+$this->pageName = 'Create a new cronjob';
+?>
+
+<?php echo $this->form->setAction($this->url(array(), 'cronjob-create')); ?>

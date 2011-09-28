@@ -20,7 +20,8 @@ class CronjobController extends Zend_Controller_Action {
     public function indexAction() {
         $this->view->form = $this->getForm();
 
-        $this->view->cronjobs = $this->cronjobs->fetchAll();
+        $this->view->activeCronjobs = $this->cronjobs->fetchAll($this->cronjobs->select()->where('active = 1'));
+        $this->view->inactiveCronjobs = $this->cronjobs->fetchAll($this->cronjobs->select()->where('active = 0'));
     }
 
     public function listAction() {
@@ -33,26 +34,38 @@ class CronjobController extends Zend_Controller_Action {
     public function createAction() {
         $this->view->form = $this->getForm();
 
-        $valid = $this->view->form->isValid($_POST);
+        if (!empty($_POST)) {
+            $valid = $this->view->form->isValid($_POST);
 
-        if ($valid) {
-            $values = $this->view->form->getValues();
+            if ($valid) {
+                $values = $this->view->form->getValues();
 
-            $cronjob = new Application_Model_Cronjob();
-            $cronjob->server = $values['server'];
-            $cronjob->path = $values['path'];
-            $cronjob->user = $values['user'];
-            $cronjob->minute = $values['minute'];
-            $cronjob->hour = $values['hour'];
-            $cronjob->dayOfMonth = $values['dayOfMonth'];
-            $cronjob->month = $values['month'];
-            $cronjob->dayOfWeek = $values['dayOfWeek'];
+                $cronjob = new Cronphp_Model_Cronjob();
+                $cronjob->server = $values['server'];
+                $cronjob->path = $values['path'];
+                $cronjob->user = $values['user'];
+                $cronjob->minute = $values['minute'];
+                $cronjob->hour = $values['hour'];
+                $cronjob->dayOfMonth = $values['dayOfMonth'];
+                $cronjob->month = $values['month'];
+                $cronjob->dayOfWeek = $values['dayOfWeek'];
 
-            $this->cronjobs->save($cronjob);
-            $this->redirector->gotoSimple('index');
+                $this->cronjobs->save($cronjob);
+                $this->redirector->gotoSimple('index');
+            }
         }
+    }
 
-        $this->render('form');
+    public function toggleAction() {
+        $id = $this->getRequest()->getParam('cronjobId');
+        $toggle = $this->getRequest()->getParam('toggle');
+
+        $cronjob = $this->cronjobs->fetchRow($this->cronjobs->select()->where('cronjobId = ?', $id));
+
+        $cronjob->$toggle(); // The regexp in the route validates if its either enable or disable
+        $success = $cronjob->save();
+
+        $this->_helper->json(array('success' => (bool) $success));
     }
 
     public function deleteAction() {
