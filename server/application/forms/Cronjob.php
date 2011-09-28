@@ -24,6 +24,14 @@ class Cronphp_Form_Cronjob extends Zend_Form {
         );
     }
 
+    public function addServers($servers) {
+        $serverlist = $this->getElement('server');
+
+        foreach ($servers as $server) {
+            $serverlist->addMultiOption($server->hostname, $server->hostname);
+        }
+    }
+
     public function init() {
         $this->setMethod('post');
 
@@ -31,16 +39,12 @@ class Cronphp_Form_Cronjob extends Zend_Form {
         $this->removeDecorator('HtmlTag');
 
         $this->addDisplayGroup(array(
-            new Zend_Form_Element_Text('server', array(
+            new Zend_Form_Element_Select('server', array(
                 'required'   => true,
                 'label'      => 'Server to run the job:',
                 'decorators' => $this->getElementDecorators(),
+                'multiOptions' => array(),
                 'filters'    => array('StringTrim'),
-                'validators' => array(
-                    array('Regex',
-                          false,
-                          array('/^[a-z][a-z0-9., \'-]{2,}$/i'))
-                )
             )),
             new Zend_Form_Element_Text('path', array(
                 'required'   => true,

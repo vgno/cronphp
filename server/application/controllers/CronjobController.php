@@ -14,6 +14,9 @@ class CronjobController extends Zend_Controller_Action {
             $this->form = new Cronphp_Form_Cronjob();
         }
 
+        $servers = new Cronphp_Model_Server();
+        $this->form->addServers($servers->fetchAll());
+
         return $this->form;
     }
 
