@@ -6,6 +6,10 @@ class Cronphp_Model_Log extends Zend_Db_Table_Abstract {
     public function getLog() {
         return $this->fetchAll();
     }
+
+    public function getLogForServer($server) {
+        return $this->fetchAll($this->select()->where('hostname = ?', $server));
+    }
 }
 
 class Cronphp_Model_Log_Row extends Zend_Db_Table_Row_Abstract {

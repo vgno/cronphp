@@ -11,15 +11,22 @@ class LogController extends Zend_Controller_Action {
         $logs = $this->logs->getLog();
 
         foreach ($logs as $log) {
-            var_dump($log->cronjobId);
             $job = $this->cronjobs->fetchRow($this->cronjobs->select()->where('cronjobId = ?', $log->cronjobId));
-var_dump($job);
             $log->cronjob = $job;
         }
         $this->view->list = $logs;
     }
 
-    public function viewAction() {
-        // action body
+    public function serverAction() {
+        $hostname = $this->getRequest()->getParam('server');
+        $logs = $this->logs->getLogForServer($hostname);
+
+        foreach ($logs as $log) {
+            $job = $this->cronjobs->fetchRow($this->cronjobs->select()->where('cronjobId = ?', $log->cronjobId));
+            $log->cronjob = $job;
+        }
+
+        $this->view->hostname = $hostname;
+        $this->view->list = $logs;
     }
 }

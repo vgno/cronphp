@@ -1,0 +1,31 @@
+<table>
+<col class="string" />
+<col class="string" />
+<col class="string" />
+<col class="string" />
+<col class="number" />
+<col class="string" />
+
+  <thead>
+    <tr>
+        <th scope="col">Cronjob</th>
+        <th scope="col">Server</th>
+        <th scope="col">Start time</th>
+        <th scope="col">End time</th>
+        <th scope="col">Execution time</th>
+        <th scope="col">Exit code</th>
+    </tr>
+  </thead>
+  <tbody>
+<?php foreach ($this->list as $log) { ?>
+    <tr>
+        <td><?php echo $log->cronjob ?></td>
+        <td><a href="<?php echo $this->url(array('server' => $log->hostname), 'log-server'); ?>"><?php echo $log->hostname ?></a></td>
+        <td><?php echo $log->start ?></td>
+        <td><?php echo $log->end ?></td>
+        <td><?php echo $log->runTime ?></td>
+        <td><?php echo $log->response ?></td>
+    </tr>
+<?php } ?>
+  </tbody>
+</table>
