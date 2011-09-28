@@ -23,14 +23,14 @@
   <tbody>
 <?php foreach ($this->cronjobs as $job) { ?>
     <tr>
-        <td><?php echo $job->getMinute() ?></td>
-        <td><?php echo $job->getHour() ?></td>
-        <td><?php echo $job->getDayOfMonth() ?></td>
-        <td><?php echo $job->getMonth() ?></td>
-        <td><?php echo $job->getDayOfWeek() ?></td>
-        <td><?php echo $job->getUser() ?></td>
-        <td><?php echo $job->getPath() ?></td>
-        <td><?php echo $job->getServer() ?></td>
+        <td><?php echo $job->cronjobMinute ?></td>
+        <td><?php echo $job->cronjobHour ?></td>
+        <td><?php echo $job->cronjobDayOfMonth ?></td>
+        <td><?php echo $job->cronjobMonth ?></td>
+        <td><?php echo $job->cronjobDayOfWeek ?></td>
+        <td><?php echo $job->cronjobUser ?></td>
+        <td><?php echo $job->cronjobPath ?></td>
+        <td><?php echo $job->cronjobServer ?></td>
     </tr>
 <?php } ?>
   </tbody>
