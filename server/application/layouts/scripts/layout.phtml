@@ -19,7 +19,7 @@
     <?php
     $this->headScript()->prependFile('//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js');
     $this->headScript()->appendFile($this->baseUrl('js/bootstrap/bootstrap-dropdown.js'));
-    $this->headScript()->appendFile($this->baseUrl('js/bootstrap/bootstrap-alerts.js'));
+    $this->headScript()->appendFile($this->baseUrl('js/bootstrap/bootstrap-twipsy.js'));
     $this->headScript()->appendFile($this->baseUrl('js/prettify/prettify.js'));
     $this->headScript()->appendFile($this->baseUrl('js/cronphp.js'));
     ?>
@@ -35,12 +35,15 @@
                 <h1><?php echo $this->pageName ?><?php if ($this->tagline) { ?> <small><?php echo $this->tagline ?></small><?php } ?></h1>
             </div>
             <div class="row">
-                <div class="span16">
+                <?php $columns = $this->placeholder('rightbar')->count() > 0 ? 10 : 16; ?>
+                <div class="span<?php echo $columns ?>">
                     <?php echo $this->layout()->content; ?>
                 </div>
-                <!--<div class="span6">
-                    <?php echo $this->placeholder('rightbar') ?>
-                </div>-->
+                <?php
+                echo $this->placeholder('rightbar')
+                    ->setPrefix('<div class="span6">')
+                    ->setPostfix('</div>');
+                ?>
             </div>
         </div>
 

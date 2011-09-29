@@ -1,5 +1,26 @@
 <?php
+$this->bodyClass = 'cronjob-create';
 $this->pageName = 'Create a new cronjob';
 ?>
 
 <?php echo $this->form->setAction($this->url(array(), 'cronjob-create')); ?>
+
+<?php $this->placeholder('rightbar')->captureStart(); ?>
+<h3>Typical intervals</h3>
+
+<ul class="typical-intervals unstyled">
+    <?php
+    $intervals = array(
+        array('format' => '* * * * *', 'label' => 'Every minute'),
+        array('format' => '*/15 * * * *', 'label' => 'Every 15. minute'),
+        array('format' => '0 * * * *', 'label' => 'Every hour'),
+        array('format' => '0 */3 * * *', 'label' => 'Every third hour'),
+        array('format' => '0 0 * * *', 'label' => 'Every midnight'),
+        array('format' => '0 0 * * 7', 'label' => 'Every Sunday midnight'),
+    );
+
+    foreach ($intervals as $interval) { ?>
+        <li><a href="#" rel="twipsy" data-original-title="Format: <?php echo $interval['format'] ?>" data-format="<?php echo $interval['format'] ?>"><?php echo $interval['label'] ?></a></li>
+    <?php } ?>
+</ul>
+<?php $this->placeholder('rightbar')->captureEnd(); ?>

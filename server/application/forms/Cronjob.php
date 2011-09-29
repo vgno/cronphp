@@ -71,9 +71,24 @@ class Cronphp_Form_Cronjob extends Zend_Form {
         ), 'serverData', array('legend' => 'Cronjob'));
 
         $this->addDisplayGroup(array(
+            new Zend_Form_Element_Text('compound', array(
+                'required'   => false,
+                'label'      => 'Quick format',
+                'class'      => 'uneditable-input',
+                'decorators' => $this->getElementDecorators(),
+                'filters'    => array('StringTrim'),
+                'validators' => array(
+                    array('Regex',
+                          false,
+                          array('/^[0-9\/*]*$/'))
+                )
+            )),
             new Zend_Form_Element_Text('minute', array(
                 'required'   => true,
                 'label'      => 'Minute',
+                'value'      => '*',
+                'class'      => 'timeFragment',
+                'attribs'    => array('autocomplete' => 'off'),
                 'decorators' => $this->getElementDecorators(),
                 'filters'    => array('StringTrim'),
                 'validators' => array(
@@ -85,6 +100,9 @@ class Cronphp_Form_Cronjob extends Zend_Form {
             new Zend_Form_Element_Text('hour', array(
                 'required'   => true,
                 'label'      => 'Hour',
+                'value'      => '*',
+                'class'      => 'timeFragment',
+                'attribs'    => array('autocomplete' => 'off'),
                 'decorators' => $this->getElementDecorators(),
                 'filters'    => array('StringTrim'),
                 'validators' => array(
@@ -96,6 +114,9 @@ class Cronphp_Form_Cronjob extends Zend_Form {
             new Zend_Form_Element_Text('dayOfMonth', array(
                 'required'   => true,
                 'label'      => 'Day of month',
+                'value'      => '*',
+                'class'      => 'timeFragment',
+                'attribs'    => array('autocomplete' => 'off'),
                 'decorators' => $this->getElementDecorators(),
                 'filters'    => array('StringTrim'),
                 'validators' => array(
@@ -107,6 +128,9 @@ class Cronphp_Form_Cronjob extends Zend_Form {
             new Zend_Form_Element_Text('month', array(
                 'required'   => true,
                 'label'      => 'Month',
+                'value'      => '*',
+                'class'      => 'timeFragment',
+                'attribs'    => array('autocomplete' => 'off'),
                 'decorators' => $this->getElementDecorators(),
                 'filters'    => array('StringTrim'),
                 'validators' => array(
@@ -118,6 +142,9 @@ class Cronphp_Form_Cronjob extends Zend_Form {
             new Zend_Form_Element_Text('dayOfWeek', array(
                 'required'   => true,
                 'label'      => 'Day of week',
+                'value'      => '*',
+                'class'      => 'timeFragment',
+                'attribs'    => array('autocomplete' => 'off'),
                 'decorators' => $this->getElementDecorators(),
                 'filters'    => array('StringTrim'),
                 'validators' => array(

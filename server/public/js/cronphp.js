@@ -33,4 +33,38 @@ jQuery(document).ready(function($) {
             e.preventDefault();
         });
     }
+
+    if (body.hasClass('cronjob-create')) {
+        var compoundField = body.find('#compound');
+        var timeFields = body.find('.timeFragment');
+
+        compoundField.bind('keyup change', function() {
+            // Validate input
+
+            // Update fragmented values
+            var fieldsData = compoundField.val().split(' ');
+
+            timeFields.each(function(i, el) {
+                $(el).val(fieldsData[i]);
+            });
+        });
+
+        timeFields.bind('keyup', function() {
+            // Validate input
+
+            // Update compound value
+            var newCompound = '';
+
+            timeFields.each(function(i, el) {
+                newCompound += $(el).val() + ' ';
+            });
+
+            compoundField.val(newCompound.trim());
+        });
+
+        body.find('ul.typical-intervals a').twipsy({placement: 'right'}).bind('click', function() {
+            compoundField.val($(this).data('format'));
+            compoundField.trigger('change');
+        });
+    }
 });
