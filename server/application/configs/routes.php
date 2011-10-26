@@ -5,7 +5,7 @@ return array(
         'type' => 'Zend_Controller_Router_Route_Static',
         'route' => '',
         'defaults' => array(
-            'controller' => 'index',
+            'controller' => 'cronjob',
             'action' => 'index',
         ),
     ),
