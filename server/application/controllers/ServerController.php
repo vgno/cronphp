@@ -8,9 +8,7 @@ class ServerController extends Zend_Controller_Action {
 
         $servers = $model->fetchAll();
 
-        foreach ($servers as $server) {
-            var_dump($server->hostname);
-        }
+        $this->view->servers = $servers;
     }
 
     public function viewAction() {
@@ -18,7 +16,7 @@ class ServerController extends Zend_Controller_Action {
         $this->view->hostname = $hostname;
 
         $cronjobs = new Cronphp_Model_Cronjob();
-        $this->view->cronjobs = $cronjobs->fetchAll($cronjobs->select()->where('cronjobServer = ?', $hostname));
+        $this->view->cronjobs = $cronjobs->fetchAll($cronjobs->select()->where('server = ?', $hostname));
 
         $logs = new Cronphp_Model_Log();
         $this->view->log = $logs->getLogForServer($hostname);

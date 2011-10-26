@@ -32,7 +32,7 @@
         <td><?php echo $job->dayOfWeek ?></td>
         <td><?php echo $job->user ?></td>
         <td><a href="<?php echo $this->url(array('cronjobId' => $job->id), 'cronjob-job-view') ?>"><?php echo $job->path ?></a></td>
-        <td><a href="<?php echo $this->url(array('server' => $job->server), 'server'); ?>"><?php echo $job->server ?></a></td>
+        <td><a href="<?php echo $this->url(array('server' => $job->server), 'server-overview'); ?>"><?php echo $job->server ?></a></td>
         <td>
             <?php if ($job->isActive()) { ?>
                 <a href="<?php echo $this->url(array('cronjobId' => $job->id, 'toggle' => 'disable'), 'cronjob-job-toggle') ?>" class="btn toggleJob danger">Disable</a>

@@ -19,7 +19,7 @@
   <tbody>
 <?php foreach ($this->list as $log) { ?>
     <tr>
-        <td><?php echo $log->cronjob ?></td>
+        <td><?php echo $log->getCronjob() ?></td>
         <td><a href="<?php echo $this->url(array('server' => $log->hostname), 'log-server'); ?>"><?php echo $log->hostname ?></a></td>
         <td><?php echo $log->start ?></td>
         <td><?php echo $log->end ?></td>

@@ -10,17 +10,31 @@ return array(
         ),
     ),
     'server' => array(
-        'type' => 'Zend_Controller_Router_Route_Regex',
-        'route' => 'server/(\w+)',
-        'defaults' => array(
-            'controller' => 'server',
-            'action' => 'view',
-            'server' => '',
+        'type' => 'Zend_Controller_Router_Route_Static',
+        'route' => 'server',
+        'chains' => array(
+            'index' => array(
+                'type' => 'Zend_Controller_Router_Route_Static',
+                'route' => '',
+                'defaults' => array(
+                    'controller' => 'server',
+                    'action' => 'index',
+                ),
+            ),
+            'overview' => array(
+                'type' => 'Zend_Controller_Router_Route_Regex',
+                'route' => '(\w+)',
+                'defaults' => array(
+                    'controller' => 'server',
+                    'action' => 'view',
+                    'server' => '',
+                ),
+                'map' => array(
+                    1 => 'server',
+                ),
+                'reverse' => '%s',
+            ),
         ),
-        'map' => array(
-            1 => 'server',
-        ),
-        'reverse' => 'server/%s',
     ),
     'cronjob' => array(
         'type' => 'Zend_Controller_Router_Route_Static',

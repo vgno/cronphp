@@ -1,1 +1,12 @@
+<?php
+$this->pageName = 'Servers';
+$this->tagline = 'List of all known servers';
+?>
 
+<h2>Known servers</h2>
+
+<ul>
+<?php foreach ($this->servers as $server) { ?>
+    <li><a href="<?php echo $this->url(array('server' => $server->hostname), 'server-overview') ?>"><?php echo $server->hostname ?></a></li>
+<?php } ?>
+</ul>
