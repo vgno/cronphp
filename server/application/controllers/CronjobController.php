@@ -53,10 +53,10 @@ class CronjobController extends Zend_Controller_Action {
     }
 
     public function toggleAction() {
-        $id = $this->getRequest()->getParam('cronjobId');
+        $id = $this->getRequest()->getParam('id');
         $toggle = $this->getRequest()->getParam('toggle');
 
-        $cronjob = $this->cronjobs->fetchRow($this->cronjobs->select()->where('cronjobId = ?', $id));
+        $cronjob = $this->cronjobs->fetchRow($this->cronjobs->select()->where('id = ?', $id));
 
         $cronjob->$toggle(); // The regexp in the route validates if its either enable or disable
         $success = $cronjob->save();

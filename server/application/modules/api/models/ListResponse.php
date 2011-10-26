@@ -1,5 +1,5 @@
 <?php
-class Api_Model_ListResponse extends Application_Model_Cronjob {
+class Api_Model_ListResponse {
 
     public $id;
     public $path;
@@ -10,14 +10,14 @@ class Api_Model_ListResponse extends Application_Model_Cronjob {
     public $month;
     public $dayOfWeek;
 
-    public function __construct(Application_Model_Cronjob $cronjob) {
-        $this->id           = $cronjob->getId();
-        $this->path         = $cronjob->getPath();
-        $this->user         = $cronjob->getUser();
-        $this->minute       = $cronjob->getMinute();
-        $this->hour         = $cronjob->getHour();
-        $this->dayOfMonth   = $cronjob->getDayOfMonth();
-        $this->month        = $cronjob->getMonth();
-        $this->dayOfWeek    = $cronjob->getDayOfWeek();
+    public function __construct(Cronphp_Model_Cronjob_Row $cronjob) {
+        $this->id           = $cronjob->id;
+        $this->path         = $cronjob->path;
+        $this->user         = $cronjob->user;
+        $this->minute       = $cronjob->minute;
+        $this->hour         = $cronjob->hour;
+        $this->dayOfMonth   = $cronjob->dayOfMonth;
+        $this->month        = $cronjob->month;
+        $this->dayOfWeek    = $cronjob->dayOfWeek;
     }
 }
