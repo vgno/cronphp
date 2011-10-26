@@ -10,6 +10,13 @@ class Cronphp_Model_Cronjob extends Zend_Db_Table_Abstract {
             ->where('server = ?', $server)
         );
     }
+
+    public function getActiveJobsByServer($server) {
+        return $this->fetchAll($this->select()
+            ->where('server = ?', $server)
+            ->where('active = 1')
+        );
+    }
 }
 
 class Cronphp_Model_Cronjob_Row extends Zend_Db_Table_Row_Abstract {
