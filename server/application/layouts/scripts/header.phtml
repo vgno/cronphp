@@ -4,13 +4,14 @@
             <a class="brand" href="<?php echo $this->url(array(), 'index'); ?>">CronPHP</a>
 
             <ul class="nav">
-                <li><a href="<?php echo $this->url(array(), 'cronjob-index'); ?>">Cronjobs</a></li>
                 <li class="dropdown" data-dropdown="dropdown">
                     <a href="#" class="dropdown-toggle">New</a>
                     <ul class="dropdown-menu">
                         <li><a href="<?php echo $this->url(array(), 'cronjob-create'); ?>">Cronjob</a></li>
                     </ul>
                 </li>
+                <li><a href="<?php echo $this->url(array(), 'cronjob-index'); ?>">Cronjobs</a></li>
+                <li><a href="<?php echo $this->url(array(), 'server-index'); ?>">Servers</a></li>
                 <li><a href="<?php echo $this->url(array(), 'log-list'); ?>">Logs</a></li>
             </ul>
         </div>
