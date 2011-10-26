@@ -10,24 +10,28 @@ class Cronphp_Model_Log extends Zend_Db_Table_Abstract {
     }
 
     public function getLogForJob($cronjob) {
-        $logs = $this->fetchAll($this->select()->where('cronjobId = ?', $cronjob));
+        $logs = $this->fetchAll($this->select()->where('cronjobId = ?', $cronjob)->order('start DESC'));
 
         return $logs;
     }
 
     public function getLogForServer($server, $cronjobs = true) {
-        $logs = $this->fetchAll($this->select()->where('hostname = ?', $server));
+        $logs = $this->fetchAll($this->select()->where('hostname = ?', $server)->order('start DESC'));
 
         return $logs;
     }
 }
 
 class Cronphp_Model_Log_Row extends Zend_Db_Table_Row_Abstract {
-    public $cronjob;
+    private $cronjob;
 
     public function getCronjob() {
-        $cronjobs = new Cronphp_Model_Cronjob();
+        if (is_null($this->cronjob)) {
+            $cronjobs = new Cronphp_Model_Cronjob();
 
-        return $cronjobs->find($this->cronjobId)->current();
+            $this->cronjob = $cronjobs->find($this->cronjobId)->current();
+        }
+
+        return $this->cronjob;
     }
 }

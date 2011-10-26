@@ -31,13 +31,20 @@
         <td><?php echo $job->month ?></td>
         <td><?php echo $job->dayOfWeek ?></td>
         <td><?php echo $job->user ?></td>
-        <td><a href="<?php echo $this->url(array('cronjobId' => $job->id), 'cronjob-job-view') ?>"><?php echo $job->path ?></a></td>
+        <td>
+            <a href="<?php echo $this->url(array('cronjobId' => $job->id), 'cronjob-job-view') ?>"><?php echo $job->path ?></a><br />
+            <?php if ($job->isActive()) { ?>
+                <span class="label success">Enabled</span>
+            <?php } else { ?>
+                <span class="label important">Not enabled</span>
+            <?php } ?>
+        </td>
         <td><a href="<?php echo $this->url(array('server' => $job->server), 'server-overview'); ?>"><?php echo $job->server ?></a></td>
         <td>
             <?php if ($job->isActive()) { ?>
                 <a href="<?php echo $this->url(array('cronjobId' => $job->id, 'toggle' => 'disable'), 'cronjob-job-toggle') ?>" class="btn toggleJob danger">Disable</a>
             <?php } else { ?>
-                <a href="<?php echo $this->url(array('cronjobId' => $job->id, 'toggle' => 'enable'), 'cronjob-job-toggle') ?>" class="btn toggleJob primary">Enable</a>
+                <a href="<?php echo $this->url(array('cronjobId' => $job->id, 'toggle' => 'enable'), 'cronjob-job-toggle') ?>" class="btn toggleJob">Enable</a>
             <?php } ?>
         </td>
     </tr>

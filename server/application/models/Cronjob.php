@@ -36,6 +36,6 @@ class Cronphp_Model_Cronjob_Row extends Zend_Db_Table_Row_Abstract {
     }
 
     public function __toString() {
-        return $this->name;
+        return $this->path;
     }
 }
